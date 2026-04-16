@@ -6,165 +6,266 @@ type Item = {
   id: string;
   room: string;
   product: string;
-  width: number;
-  drop: number;
+  widthMm: number;
+  dropMm: number;
   qty: number;
-  controlSide: string;
+  controlSide: "Left" | "Right";
+  clearWindow: "Yes" | "No";
 };
 
-const WIDTH_STEPS = [500,1000,1500,2000,2500,3000,3500,4000];
-const DROP_STEPS = [1000,1500,2000,2500,3000,3500];
+const WIDTH_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500];
+const DROP_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500];
 
-// ⚠️ SAMPLE pricing (we will replace with your real grid next)
-function getPrice(width:number, drop:number){
-  return (width/1000) * (drop/1000) * 250;
-}
+// Real pricing from your workbook
+const BASE_PRICE_GRID: Record<number, Record<number, number>> = {
+  1000: { 1000: 1566, 1500: 1851, 2000: 2136, 2500: 2421, 3000: 2706, 3500: 2991, 4000: 3276, 4500: 3561, 5000: 3846, 5500: 4131 },
+  1500: { 1000: 1746, 1500: 2091, 2000: 2436, 2500: 2781, 3000: 3126, 3500: 3471, 4000: 3816, 4500: 4161, 5000: 4506, 5500: 4851 },
+  2000: { 1000: 1926, 1500: 2331, 2000: 2736, 2500: 3141, 3000: 3546, 3500: 3951, 4000: 4356, 4500: 4761, 5000: 5166, 5500: 5571 },
+  2500: { 1000: 2106, 1500: 2571, 2000: 3036, 2500: 3501, 3000: 3966, 3500: 4431, 4000: 4896, 4500: 5361, 5000: 5826, 5500: 6291 },
+  3000: { 1000: 2286, 1500: 2811, 2000: 3336, 2500: 3861, 3000: 4386, 3500: 4911, 4000: 5436, 4500: 5961, 5000: 6486, 5500: 7011 },
+  3500: { 1000: 2466, 1500: 3051, 2000: 3636, 2500: 4221, 3000: 4806, 3500: 5391, 4000: 5976, 4500: 6561, 5000: 7146, 5500: 7731 },
+};
 
-// Round UP to next available size
-function roundUp(value:number, steps:number[]){
-  for(let s of steps){
-    if(value <= s) return s;
+// Clear window add-on from your workbook
+const CLEAR_WINDOW_ADDON: Record<number, number> = {
+  1000: 450,
+  1500: 675,
+  2000: 900,
+  2500: 1125,
+  3000: 1350,
+  3500: 1575,
+  4000: 1800,
+  4500: 2025,
+  5000: 2250,
+  5500: 2475,
+};
+
+const VAT_RATE = 0.15;
+
+function roundUpToGrid(valueMm: number, steps: number[]) {
+  for (const step of steps) {
+    if (valueMm <= step) return step;
   }
-  return steps[steps.length-1];
+  return null;
 }
 
-export default function Page(){
+function currency(value: number) {
+  return value.toLocaleString("en-ZA", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
 
+export default function Page() {
   const [items, setItems] = useState<Item[]>([
     {
-      id:"1",
-      room:"",
-      product:"Outdoor Drop Blind",
-      width:0,
-      drop:0,
-      qty:1,
-      controlSide:"Left"
-    }
+      id: "1",
+      room: "",
+      product: "Outdoor Drop Blind",
+      widthMm: 0,
+      dropMm: 0,
+      qty: 1,
+      controlSide: "Left",
+      clearWindow: "No",
+    },
   ]);
 
+  const [extraMarkupPercent, setExtraMarkupPercent] = useState<number>(0);
+
   const addItem = () => {
-    setItems([
-      ...items,
+    setItems((prev) => [
+      ...prev,
       {
-        id:Date.now().toString(),
-        room:"",
-        product:"Outdoor Drop Blind",
-        width:0,
-        drop:0,
-        qty:1,
-        controlSide:"Left"
-      }
+        id: Date.now().toString(),
+        room: "",
+        product: "Outdoor Drop Blind",
+        widthMm: 0,
+        dropMm: 0,
+        qty: 1,
+        controlSide: "Left",
+        clearWindow: "No",
+      },
     ]);
   };
 
-  const updateItem = (id:string, field:keyof Item, value:any)=>{
-    setItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, [field]: value } : item
-      )
+  const updateItem = <K extends keyof Item>(id: string, field: K, value: Item[K]) => {
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
-  const totals = useMemo(()=>{
-    let subtotal = 0;
+  const removeItem = (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
-    items.forEach(item=>{
-      const chargeWidth = roundUp(item.width, WIDTH_STEPS);
-      const chargeDrop = roundUp(item.drop, DROP_STEPS);
-      const unit = getPrice(chargeWidth, chargeDrop);
-      subtotal += unit * item.qty;
+  const computedItems = useMemo(() => {
+    return items.map((item) => {
+      const roundedWidth = roundUpToGrid(item.widthMm, WIDTH_STEPS_MM);
+      const roundedDrop = roundUpToGrid(item.dropMm, DROP_STEPS_MM);
+
+      const outsideGrid = !roundedWidth || !roundedDrop;
+
+      let basePrice = 0;
+      let clearWindowAddon = 0;
+      let unitPrice = 0;
+
+      if (!outsideGrid) {
+        basePrice = BASE_PRICE_GRID[roundedDrop][roundedWidth];
+        clearWindowAddon = item.clearWindow === "Yes" ? CLEAR_WINDOW_ADDON[roundedWidth] ?? 0 : 0;
+        unitPrice = (basePrice + clearWindowAddon) * (1 + extraMarkupPercent / 100);
+      }
+
+      const lineTotal = unitPrice * Math.max(item.qty || 0, 0);
+
+      return {
+        ...item,
+        roundedWidth,
+        roundedDrop,
+        outsideGrid,
+        basePrice,
+        clearWindowAddon,
+        unitPrice,
+        lineTotal,
+      };
     });
+  }, [items, extraMarkupPercent]);
 
-    const vat = subtotal * 0.15;
+  const totals = useMemo(() => {
+    const subtotal = computedItems.reduce((sum, item) => sum + item.lineTotal, 0);
+    const vat = subtotal * VAT_RATE;
     const total = subtotal + vat;
-
     return { subtotal, vat, total };
-
-  },[items]);
+  }, [computedItems]);
 
   return (
-    <div style={{padding:20,fontFamily:"Arial"}}>
-      <h1>Luvaflex Quote App</h1>
+    <div style={{ padding: 20, fontFamily: "Arial, sans-serif" }}>
+      <h1 style={{ marginBottom: 8 }}>Luvaflex Quote App</h1>
+      <p style={{ marginTop: 0, color: "#555" }}>
+        Measured sizes are shown to the customer. Pricing runs in the background using rounded grid sizes.
+      </p>
 
-      <table border={1} cellPadding={8} style={{width:"100%",marginTop:20}}>
-        <thead>
-          <tr>
-            <th>Room</th>
-            <th>Product</th>
-            <th>Width (Measured mm)</th>
-            <th>Drop (Measured mm)</th>
-            <th>Control Side</th>
-            <th>Qty</th>
-            <th>Unit Price</th>
-            <th>Total</th>
-          </tr>
-        </thead>
+      <div style={{ marginBottom: 20 }}>
+        <label style={{ fontWeight: 600 }}>
+          Extra Markup %{" "}
+          <input
+            type="number"
+            value={extraMarkupPercent}
+            onChange={(e) => setExtraMarkupPercent(Number(e.target.value) || 0)}
+            style={{ marginLeft: 8, width: 90 }}
+          />
+        </label>
+      </div>
 
-        <tbody>
-          {items.map(item=>{
-
-            const chargeWidth = roundUp(item.width, WIDTH_STEPS);
-            const chargeDrop = roundUp(item.drop, DROP_STEPS);
-            const unitPrice = getPrice(chargeWidth, chargeDrop);
-
-            return (
+      <div style={{ overflowX: "auto" }}>
+        <table border={1} cellPadding={8} style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>Product</th>
+              <th>Width (Measured mm)</th>
+              <th>Drop (Measured mm)</th>
+              <th>Window</th>
+              <th>Control Side</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {computedItems.map((item) => (
               <tr key={item.id}>
                 <td>
-                  <input value={item.room}
-                    onChange={e=>updateItem(item.id,"room",e.target.value)}
+                  <input
+                    value={item.room}
+                    onChange={(e) => updateItem(item.id, "room", e.target.value)}
                   />
                 </td>
 
                 <td>{item.product}</td>
 
                 <td>
-                  <input type="number"
-                    value={item.width}
-                    onChange={e=>updateItem(item.id,"width",Number(e.target.value))}
+                  <input
+                    type="number"
+                    value={item.widthMm}
+                    onChange={(e) => updateItem(item.id, "widthMm", Number(e.target.value) || 0)}
                   />
                 </td>
 
                 <td>
-                  <input type="number"
-                    value={item.drop}
-                    onChange={e=>updateItem(item.id,"drop",Number(e.target.value))}
+                  <input
+                    type="number"
+                    value={item.dropMm}
+                    onChange={(e) => updateItem(item.id, "dropMm", Number(e.target.value) || 0)}
                   />
                 </td>
 
                 <td>
                   <select
-                    value={item.controlSide}
-                    onChange={e=>updateItem(item.id,"controlSide",e.target.value)}
+                    value={item.clearWindow}
+                    onChange={(e) =>
+                      updateItem(item.id, "clearWindow", e.target.value as "Yes" | "No")
+                    }
                   >
-                    <option>Left</option>
-                    <option>Right</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
                   </select>
                 </td>
 
                 <td>
-                  <input type="number"
+                  <select
+                    value={item.controlSide}
+                    onChange={(e) =>
+                      updateItem(item.id, "controlSide", e.target.value as "Left" | "Right")
+                    }
+                  >
+                    <option value="Left">Left</option>
+                    <option value="Right">Right</option>
+                  </select>
+                </td>
+
+                <td>
+                  <input
+                    type="number"
                     value={item.qty}
-                    onChange={e=>updateItem(item.id,"qty",Number(e.target.value))}
+                    onChange={(e) => updateItem(item.id, "qty", Number(e.target.value) || 0)}
+                    style={{ width: 60 }}
                   />
                 </td>
 
-                <td>{unitPrice.toFixed(2)}</td>
+                <td>
+                  {item.outsideGrid ? (
+                    <span style={{ color: "red", fontWeight: 600 }}>Custom Quote</span>
+                  ) : (
+                    currency(item.unitPrice)
+                  )}
+                </td>
 
-                <td>{(unitPrice * item.qty).toFixed(2)}</td>
+                <td>
+                  {item.outsideGrid ? (
+                    <span style={{ color: "red", fontWeight: 600 }}>-</span>
+                  ) : (
+                    currency(item.lineTotal)
+                  )}
+                </td>
+
+                <td>
+                  <button onClick={() => removeItem(item.id)}>X</button>
+                </td>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      <button onClick={addItem} style={{marginTop:20}}>
+      <button onClick={addItem} style={{ marginTop: 20 }}>
         Add Item
       </button>
 
-      <div style={{marginTop:30}}>
-        <p>Subtotal: {totals.subtotal.toFixed(2)}</p>
-        <p>VAT (15%): {totals.vat.toFixed(2)}</p>
-        <h2>Total: {totals.total.toFixed(2)}</h2>
+      <div style={{ marginTop: 30 }}>
+        <p>Subtotal: {currency(totals.subtotal)}</p>
+        <p>VAT (15%): {currency(totals.vat)}</p>
+        <h2>Total: {currency(totals.total)}</h2>
       </div>
     </div>
   );
