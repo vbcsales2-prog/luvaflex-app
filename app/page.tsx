@@ -6,8 +6,8 @@ type Item = {
   id: string;
   room: string;
   product: string;
-  widthMm: number | "";
-  dropMm: number | "";
+  widthM: number | "";
+  dropM: number | "";
   qty: number;
   controlSide: "Left" | "Right";
   clearWindow: "Yes" | "No";
@@ -60,8 +60,8 @@ export default function Page() {
       id: "1",
       room: "",
       product: "Outdoor Drop Blind",
-      widthMm: "",
-      dropMm: "",
+      widthM: "",
+      dropM: "",
       qty: 1,
       controlSide: "Left",
       clearWindow: "No",
@@ -77,8 +77,8 @@ export default function Page() {
         id: Date.now().toString(),
         room: "",
         product: "Outdoor Drop Blind",
-        widthMm: "",
-        dropMm: "",
+        widthM: "",
+        dropM: "",
         qty: 1,
         controlSide: "Left",
         clearWindow: "No",
@@ -99,14 +99,16 @@ export default function Page() {
   const computedItems = useMemo(() => {
     return items.map((item) => {
       const hasSizes =
-        item.widthMm !== "" &&
-        item.dropMm !== "" &&
-        Number(item.widthMm) > 0 &&
-        Number(item.dropMm) > 0;
+        item.widthM !== "" &&
+        item.dropM !== "" &&
+        Number(item.widthM) > 0 &&
+        Number(item.dropM) > 0;
 
       if (!hasSizes) {
         return {
           ...item,
+          measuredWidthMm: 0,
+          measuredDropMm: 0,
           roundedWidth: null,
           roundedDrop: null,
           outsideGrid: false,
@@ -118,11 +120,11 @@ export default function Page() {
         };
       }
 
-      const measuredWidth = Number(item.widthMm);
-      const measuredDrop = Number(item.dropMm);
+      const measuredWidthMm = Math.ceil(Number(item.widthM) * 1000);
+      const measuredDropMm = Math.ceil(Number(item.dropM) * 1000);
 
-      const roundedWidth = roundUpToGrid(measuredWidth, WIDTH_STEPS_MM);
-      const roundedDrop = roundUpToGrid(measuredDrop, DROP_STEPS_MM);
+      const roundedWidth = roundUpToGrid(measuredWidthMm, WIDTH_STEPS_MM);
+      const roundedDrop = roundUpToGrid(measuredDropMm, DROP_STEPS_MM);
 
       const outsideGrid = !roundedWidth || !roundedDrop;
 
@@ -141,6 +143,8 @@ export default function Page() {
 
       return {
         ...item,
+        measuredWidthMm,
+        measuredDropMm,
         roundedWidth,
         roundedDrop,
         outsideGrid,
@@ -164,7 +168,7 @@ export default function Page() {
     <div style={{ padding: 20, fontFamily: "Arial, sans-serif" }}>
       <h1 style={{ marginBottom: 8 }}>Luvaflex Quote App</h1>
       <p style={{ marginTop: 0, color: "#555" }}>
-        Measured sizes are shown to the customer. Pricing runs in the background using rounded grid sizes.
+        Enter sizes in metres. Pricing runs in the background using rounded grid sizes.
       </p>
 
       <div style={{ marginBottom: 20 }}>
@@ -185,8 +189,8 @@ export default function Page() {
             <tr>
               <th>Room</th>
               <th>Product</th>
-              <th>Width (Measured mm)</th>
-              <th>Drop (Measured mm)</th>
+              <th>Width (m)</th>
+              <th>Drop (m)</th>
               <th>Window</th>
               <th>Control Side</th>
               <th>Qty</th>
@@ -210,11 +214,12 @@ export default function Page() {
                 <td>
                   <input
                     type="number"
-                    value={item.widthMm}
+                    step="0.001"
+                    value={item.widthM}
                     onChange={(e) =>
                       updateItem(
                         item.id,
-                        "widthMm",
+                        "widthM",
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
@@ -224,11 +229,12 @@ export default function Page() {
                 <td>
                   <input
                     type="number"
-                    value={item.dropMm}
+                    step="0.001"
+                    value={item.dropM}
                     onChange={(e) =>
                       updateItem(
                         item.id,
-                        "dropMm",
+                        "dropM",
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
