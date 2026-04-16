@@ -6,8 +6,8 @@ type Item = {
   id: string;
   room: string;
   product: string;
-  widthMm: number;
-  dropMm: number;
+  widthMm: number | "";
+  dropMm: number | "";
   qty: number;
   controlSide: "Left" | "Right";
   clearWindow: "Yes" | "No";
@@ -16,7 +16,6 @@ type Item = {
 const WIDTH_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500];
 const DROP_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500];
 
-// Real pricing from your workbook
 const BASE_PRICE_GRID: Record<number, Record<number, number>> = {
   1000: { 1000: 1566, 1500: 1851, 2000: 2136, 2500: 2421, 3000: 2706, 3500: 2991, 4000: 3276, 4500: 3561, 5000: 3846, 5500: 4131 },
   1500: { 1000: 1746, 1500: 2091, 2000: 2436, 2500: 2781, 3000: 3126, 3500: 3471, 4000: 3816, 4500: 4161, 5000: 4506, 5500: 4851 },
@@ -26,7 +25,6 @@ const BASE_PRICE_GRID: Record<number, Record<number, number>> = {
   3500: { 1000: 2466, 1500: 3051, 2000: 3636, 2500: 4221, 3000: 4806, 3500: 5391, 4000: 5976, 4500: 6561, 5000: 7146, 5500: 7731 },
 };
 
-// Clear window add-on from your workbook
 const CLEAR_WINDOW_ADDON: Record<number, number> = {
   1000: 450,
   1500: 675,
@@ -62,8 +60,8 @@ export default function Page() {
       id: "1",
       room: "",
       product: "Outdoor Drop Blind",
-      widthMm: 0,
-      dropMm: 0,
+      widthMm: "",
+      dropMm: "",
       qty: 1,
       controlSide: "Left",
       clearWindow: "No",
@@ -79,8 +77,8 @@ export default function Page() {
         id: Date.now().toString(),
         room: "",
         product: "Outdoor Drop Blind",
-        widthMm: 0,
-        dropMm: 0,
+        widthMm: "",
+        dropMm: "",
         qty: 1,
         controlSide: "Left",
         clearWindow: "No",
@@ -100,8 +98,31 @@ export default function Page() {
 
   const computedItems = useMemo(() => {
     return items.map((item) => {
-      const roundedWidth = roundUpToGrid(item.widthMm, WIDTH_STEPS_MM);
-      const roundedDrop = roundUpToGrid(item.dropMm, DROP_STEPS_MM);
+      const hasSizes =
+        item.widthMm !== "" &&
+        item.dropMm !== "" &&
+        Number(item.widthMm) > 0 &&
+        Number(item.dropMm) > 0;
+
+      if (!hasSizes) {
+        return {
+          ...item,
+          roundedWidth: null,
+          roundedDrop: null,
+          outsideGrid: false,
+          basePrice: 0,
+          clearWindowAddon: 0,
+          unitPrice: 0,
+          lineTotal: 0,
+          pending: true,
+        };
+      }
+
+      const measuredWidth = Number(item.widthMm);
+      const measuredDrop = Number(item.dropMm);
+
+      const roundedWidth = roundUpToGrid(measuredWidth, WIDTH_STEPS_MM);
+      const roundedDrop = roundUpToGrid(measuredDrop, DROP_STEPS_MM);
 
       const outsideGrid = !roundedWidth || !roundedDrop;
 
@@ -109,9 +130,10 @@ export default function Page() {
       let clearWindowAddon = 0;
       let unitPrice = 0;
 
-      if (!outsideGrid) {
+      if (!outsideGrid && roundedWidth && roundedDrop) {
         basePrice = BASE_PRICE_GRID[roundedDrop][roundedWidth];
-        clearWindowAddon = item.clearWindow === "Yes" ? CLEAR_WINDOW_ADDON[roundedWidth] ?? 0 : 0;
+        clearWindowAddon =
+          item.clearWindow === "Yes" ? CLEAR_WINDOW_ADDON[roundedWidth] ?? 0 : 0;
         unitPrice = (basePrice + clearWindowAddon) * (1 + extraMarkupPercent / 100);
       }
 
@@ -126,6 +148,7 @@ export default function Page() {
         clearWindowAddon,
         unitPrice,
         lineTotal,
+        pending: false,
       };
     });
   }, [items, extraMarkupPercent]);
@@ -188,7 +211,13 @@ export default function Page() {
                   <input
                     type="number"
                     value={item.widthMm}
-                    onChange={(e) => updateItem(item.id, "widthMm", Number(e.target.value) || 0)}
+                    onChange={(e) =>
+                      updateItem(
+                        item.id,
+                        "widthMm",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
                   />
                 </td>
 
@@ -196,7 +225,13 @@ export default function Page() {
                   <input
                     type="number"
                     value={item.dropMm}
-                    onChange={(e) => updateItem(item.id, "dropMm", Number(e.target.value) || 0)}
+                    onChange={(e) =>
+                      updateItem(
+                        item.id,
+                        "dropMm",
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
                   />
                 </td>
 
@@ -234,7 +269,9 @@ export default function Page() {
                 </td>
 
                 <td>
-                  {item.outsideGrid ? (
+                  {item.pending ? (
+                    <span style={{ color: "#777" }}>-</span>
+                  ) : item.outsideGrid ? (
                     <span style={{ color: "red", fontWeight: 600 }}>Custom Quote</span>
                   ) : (
                     currency(item.unitPrice)
@@ -242,7 +279,9 @@ export default function Page() {
                 </td>
 
                 <td>
-                  {item.outsideGrid ? (
+                  {item.pending ? (
+                    <span style={{ color: "#777" }}>-</span>
+                  ) : item.outsideGrid ? (
                     <span style={{ color: "red", fontWeight: 600 }}>-</span>
                   ) : (
                     currency(item.lineTotal)
