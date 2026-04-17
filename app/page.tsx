@@ -250,13 +250,13 @@ export default function Page() {
   const grandTotal = subtotal + vat;
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <h1>Luvaflex Quote App</h1>
+    <div style={{ padding: 12, fontFamily: "Arial" }}>
+      <h1 style={{ margin: "0 0 12px 0" }}>Luvaflex Quote App</h1>
 
       <table
         border={1}
-        cellPadding={6}
-        style={{ width: "100%", marginTop: 20, borderCollapse: "collapse", fontSize: 13 }}
+        cellPadding={4}
+        style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}
       >
         <thead>
           <tr>
@@ -451,20 +451,18 @@ export default function Page() {
         </tbody>
       </table>
 
-      <button onClick={addItem} style={{ marginTop: 10 }}>
-        Add Item
-      </button>
+      <button onClick={addItem} style={{ marginTop: 8 }}>Add Item</button>
 
-      <div style={{ marginTop: 20 }}>
-        <p>Subtotal: {currency(subtotal)}</p>
-        <p>VAT: {currency(vat)}</p>
-        <h2>Total: {currency(grandTotal)}</h2>
+      <div style={{ marginTop: 12 }}>
+        <p style={{ margin: "0 0 6px 0" }}>Subtotal: {currency(subtotal)}</p>
+        <p style={{ margin: "0 0 8px 0" }}>VAT: {currency(vat)}</p>
+        <h2 style={{ margin: 0 }}>Total: {currency(grandTotal)}</h2>
       </div>
 
       <div
         style={{
-          marginTop: 50,
-          padding: 10,
+          marginTop: 34,
+          padding: 8,
           border: "2px solid #000",
           background: "#fff",
         }}
@@ -474,7 +472,7 @@ export default function Page() {
             width: "100%",
             borderCollapse: "collapse",
             border: "2px solid black",
-            marginBottom: 18,
+            marginBottom: 10,
             tableLayout: "fixed",
           }}
         >
@@ -484,29 +482,29 @@ export default function Page() {
                 style={{
                   width: "38%",
                   borderRight: "2px solid black",
-                  padding: "4px 8px",
+                  padding: "2px 6px",
                   verticalAlign: "top",
                 }}
               >
-                <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
                   <div style={{ flex: 1 }}>
                     <img
                       src="/logo.png"
                       alt="Venetian Blind Centre"
                       style={{
                         width: "100%",
-                        maxWidth: 520,
+                        maxWidth: 500,
                         height: "auto",
                         display: "block",
-                        marginBottom: 4,
+                        marginBottom: 2,
                       }}
                     />
 
                     <div
                       style={{
-                        marginTop: 6,
-                        fontSize: 13,
-                        lineHeight: "16px",
+                        marginTop: 4,
+                        fontSize: 12,
+                        lineHeight: "15px",
                         textAlign: "left",
                       }}
                     >
@@ -521,21 +519,22 @@ export default function Page() {
 
                   <div
                     style={{
-                      width: 150,
+                      width: 145,
                       border: "1px solid black",
-                      padding: 8,
-                      fontSize: 11,
-                      lineHeight: "16px",
+                      padding: 6,
+                      fontSize: 10.5,
+                      lineHeight: "14px",
                       textAlign: "center",
-                      marginTop: 10,
+                      marginTop: 8,
                       alignSelf: "flex-start",
                     }}
                   >
                     <div><b>MONDAY TO FRIDAY -</b></div>
                     <div><b>7:30am TO 4:30pm</b></div>
-                    <div style={{ marginTop: 6 }}><b>CLOSED FRIDAYS BETWEEN</b></div>
+                    <div style={{ marginTop: 4 }}><b>CLOSED FRIDAYS</b></div>
+                    <div><b>BETWEEN</b></div>
                     <div><b>11:30 & 2pm</b></div>
-                    <div style={{ marginTop: 6 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
+                    <div style={{ marginTop: 4 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
                   </div>
                 </div>
               </td>
@@ -548,25 +547,25 @@ export default function Page() {
                   padding: 0,
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <tbody>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
                         <b>INVOICE TO / NAME:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
                         <b>ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
                         <b>POSTAL ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>TEL (HOME):</b></span>
                           <span><b>TEL (WORK):</b></span>
@@ -574,7 +573,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>FAX:</b></span>
                           <span><b>CELL:</b></span>
@@ -582,12 +581,12 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
                         <b>E-MAIL:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "1px 6px" }}>
+                      <td style={{ padding: "0 5px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>CUSTOMER VAT NO:</b></span>
                           <span><b>O/NO:</b></span>
@@ -599,13 +598,13 @@ export default function Page() {
               </td>
 
               <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <tbody>
                     <tr>
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "6px",
+                          padding: "4px",
                           textAlign: "center",
                         }}
                       >
@@ -616,7 +615,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "9px 6px",
+                          padding: "7px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -627,7 +626,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "9px 6px",
+                          padding: "7px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -638,7 +637,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "9px 6px",
+                          padding: "7px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -649,7 +648,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "9px 6px",
+                          padding: "7px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -657,7 +656,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "9px 6px", textAlign: "center" }}>
+                      <td style={{ padding: "7px 4px", textAlign: "center" }}>
                         INTERNAL ORDER No:
                       </td>
                     </tr>
@@ -670,8 +669,8 @@ export default function Page() {
 
         <table
           border={1}
-          cellPadding={6}
-          style={{ width: "100%", marginTop: 6, borderCollapse: "collapse", fontSize: 13 }}
+          cellPadding={4}
+          style={{ width: "100%", marginTop: 4, borderCollapse: "collapse", fontSize: 12 }}
         >
           <thead>
             <tr>
@@ -710,46 +709,46 @@ export default function Page() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: 26, display: "flex", gap: 18 }}>
-          <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
-            <p><b>CUSTOMER CONFIRMATION</b></p>
-            <p>Name: __________________________</p>
-            <p>Date: __________________________</p>
-            <p>Signature: _____________________</p>
+        <div style={{ marginTop: 18, display: "flex", gap: 14 }}>
+          <div style={{ flex: 1, border: "1px solid #000", padding: 8 }}>
+            <p style={{ margin: "0 0 8px 0" }}><b>CUSTOMER CONFIRMATION</b></p>
+            <p style={{ margin: "0 0 8px 0" }}>Name: __________________________</p>
+            <p style={{ margin: "0 0 8px 0" }}>Date: __________________________</p>
+            <p style={{ margin: 0 }}>Signature: _____________________</p>
           </div>
 
-          <div style={{ flex: 2, border: "1px solid #000", padding: 10 }}>
-            <p><b>PLEASE NOTE THE FOLLOWING:</b></p>
+          <div style={{ flex: 2, border: "1px solid #000", padding: 8 }}>
+            <p style={{ margin: "0 0 8px 0" }}><b>PLEASE NOTE THE FOLLOWING:</b></p>
 
-            <p style={{ fontSize: 12, lineHeight: "18px" }}>
+            <p style={{ margin: "0 0 6px 0", fontSize: 11.5, lineHeight: "16px" }}>
               All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
             </p>
 
-            <p style={{ fontSize: 12, lineHeight: "18px" }}>
+            <p style={{ margin: "0 0 6px 0", fontSize: 11.5, lineHeight: "16px" }}>
               We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.
             </p>
 
-            <p style={{ fontSize: 12, lineHeight: "18px" }}>
+            <p style={{ margin: "0 0 6px 0", fontSize: 11.5, lineHeight: "16px" }}>
               All awnings and outdoor blinds installed are not guaranteed against storm damage.
             </p>
 
-            <p style={{ fontSize: 12, lineHeight: "18px" }}>
+            <p style={{ margin: 0, fontSize: 11.5, lineHeight: "16px" }}>
               For security measures all cash payments to be made instore.
             </p>
           </div>
 
-          <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
-            <p style={{ textAlign: "center" }}>
+          <div style={{ flex: 1, border: "1px solid #000", padding: 8 }}>
+            <p style={{ textAlign: "center", margin: "0 0 14px 0" }}>
               <b>QUOTE VALID FOR 7 DAYS</b>
             </p>
 
-            <div style={{ marginTop: 20 }}>
-              <p style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ marginTop: 10 }}>
+              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
                 <span>Subtotal:</span>
                 <span>{currency(subtotal)}</span>
               </p>
 
-              <p style={{ display: "flex", justifyContent: "space-between" }}>
+              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
                 <span>VAT:</span>
                 <span>{currency(vat)}</span>
               </p>
@@ -759,7 +758,7 @@ export default function Page() {
                   display: "flex",
                   justifyContent: "space-between",
                   fontWeight: "bold",
-                  marginTop: 10,
+                  margin: 0,
                 }}
               >
                 <span>Total:</span>
