@@ -250,13 +250,18 @@ export default function Page() {
   const grandTotal = subtotal + vat;
 
   return (
-    <div style={{ padding: 12, fontFamily: "Arial" }}>
-      <h1 style={{ margin: "0 0 12px 0" }}>Luvaflex Quote App</h1>
+    <div style={{ padding: 8, fontFamily: "Arial", background: "#fff", color: "#000" }}>
+      <h1 style={{ margin: "0 0 10px 0", fontSize: 18 }}>Luvaflex Quote App</h1>
 
       <table
         border={1}
-        cellPadding={4}
-        style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}
+        cellPadding={6}
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: 12,
+          border: "2px solid #000",
+        }}
       >
         <thead>
           <tr>
@@ -281,6 +286,7 @@ export default function Page() {
                 <input
                   value={item.area}
                   onChange={(e) => update(item.id, "area", e.target.value)}
+                  style={{ width: "100%" }}
                 />
               </td>
 
@@ -292,6 +298,7 @@ export default function Page() {
                   onChange={(e) =>
                     update(item.id, "width", e.target.value === "" ? "" : Number(e.target.value))
                   }
+                  style={{ width: "100%" }}
                 />
               </td>
 
@@ -303,6 +310,7 @@ export default function Page() {
                   onChange={(e) =>
                     update(item.id, "drop", e.target.value === "" ? "" : Number(e.target.value))
                   }
+                  style={{ width: "100%" }}
                 />
               </td>
 
@@ -320,6 +328,7 @@ export default function Page() {
                     update(item.id, "manualPrice", undefined);
                     update(item.id, "editingPrice", false);
                   }}
+                  style={{ width: "100%" }}
                 >
                   {TYPES.map((type) => (
                     <option key={type} value={type}>
@@ -334,6 +343,7 @@ export default function Page() {
                   <select
                     value={item.fabric}
                     onChange={(e) => update(item.id, "fabric", e.target.value)}
+                    style={{ width: "100%" }}
                   >
                     <option value="Sheerweave">Sheerweave</option>
                     <option value="PVC">PVC</option>
@@ -343,6 +353,7 @@ export default function Page() {
                   <input
                     value={item.fabric}
                     onChange={(e) => update(item.id, "fabric", e.target.value)}
+                    style={{ width: "100%" }}
                   />
                 )}
               </td>
@@ -351,6 +362,7 @@ export default function Page() {
                 <input
                   value={item.colour}
                   onChange={(e) => update(item.id, "colour", e.target.value)}
+                  style={{ width: "100%" }}
                 />
               </td>
 
@@ -359,6 +371,7 @@ export default function Page() {
                   <select
                     value={item.slat || "25mm"}
                     onChange={(e) => update(item.id, "slat", e.target.value)}
+                    style={{ width: "100%" }}
                   >
                     <option value="25mm">25mm</option>
                     <option value="50mm">50mm</option>
@@ -367,6 +380,7 @@ export default function Page() {
                   <select
                     value={item.slat || "90mm"}
                     onChange={(e) => update(item.id, "slat", e.target.value)}
+                    style={{ width: "100%" }}
                   >
                     <option value="90mm">90mm</option>
                     <option value="127mm">127mm</option>
@@ -381,6 +395,7 @@ export default function Page() {
                 <select
                   value={item.fixture}
                   onChange={(e) => update(item.id, "fixture", e.target.value)}
+                  style={{ width: "100%" }}
                 >
                   <option value="Rec">Rec</option>
                   <option value="F/F">F/F</option>
@@ -392,6 +407,7 @@ export default function Page() {
                 <select
                   value={item.control}
                   onChange={(e) => update(item.id, "control", e.target.value)}
+                  style={{ width: "100%" }}
                 >
                   {getControlOptions(item.type).map((option) => (
                     <option key={option} value={option}>
@@ -406,6 +422,7 @@ export default function Page() {
                   <select
                     value={item.remarks}
                     onChange={(e) => update(item.id, "remarks", e.target.value)}
+                    style={{ width: "100%" }}
                   >
                     <option value="With Window">With Window</option>
                     <option value="Without Window">Without Window</option>
@@ -414,11 +431,12 @@ export default function Page() {
                   <input
                     value={item.remarks}
                     onChange={(e) => update(item.id, "remarks", e.target.value)}
+                    style={{ width: "100%" }}
                   />
                 )}
               </td>
 
-              <td style={{ textAlign: "right", minWidth: 90 }}>
+              <td style={{ textAlign: "right", minWidth: 95 }}>
                 {item.manual ? (
                   item.editingPrice ? (
                     <input
@@ -429,6 +447,7 @@ export default function Page() {
                         update(item.id, "editingPrice", false);
                       }}
                       autoFocus
+                      style={{ width: "100%" }}
                     />
                   ) : (
                     <span
@@ -451,18 +470,20 @@ export default function Page() {
         </tbody>
       </table>
 
-      <button onClick={addItem} style={{ marginTop: 8 }}>Add Item</button>
+      <button onClick={addItem} style={{ marginTop: 8 }}>
+        Add Item
+      </button>
 
       <div style={{ marginTop: 12 }}>
         <p style={{ margin: "0 0 6px 0" }}>Subtotal: {currency(subtotal)}</p>
         <p style={{ margin: "0 0 8px 0" }}>VAT: {currency(vat)}</p>
-        <h2 style={{ margin: 0 }}>Total: {currency(grandTotal)}</h2>
+        <h2 style={{ margin: 0, fontSize: 20 }}>Total: {currency(grandTotal)}</h2>
       </div>
 
       <div
         style={{
-          marginTop: 34,
-          padding: 8,
+          marginTop: 24,
+          padding: 6,
           border: "2px solid #000",
           background: "#fff",
         }}
@@ -471,8 +492,8 @@ export default function Page() {
           style={{
             width: "100%",
             borderCollapse: "collapse",
-            border: "2px solid black",
-            marginBottom: 10,
+            border: "2px solid #000",
+            marginBottom: 8,
             tableLayout: "fixed",
           }}
         >
@@ -481,8 +502,8 @@ export default function Page() {
               <td
                 style={{
                   width: "38%",
-                  borderRight: "2px solid black",
-                  padding: "2px 6px",
+                  borderRight: "2px solid #000",
+                  padding: "4px 6px",
                   verticalAlign: "top",
                 }}
               >
@@ -519,8 +540,8 @@ export default function Page() {
 
                   <div
                     style={{
-                      width: 145,
-                      border: "1px solid black",
+                      width: 150,
+                      border: "1px solid #000",
                       padding: 6,
                       fontSize: 10.5,
                       lineHeight: "14px",
@@ -542,7 +563,7 @@ export default function Page() {
               <td
                 style={{
                   width: "42%",
-                  borderRight: "2px solid black",
+                  borderRight: "2px solid #000",
                   verticalAlign: "top",
                   padding: 0,
                 }}
@@ -550,22 +571,22 @@ export default function Page() {
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <tbody>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <b>INVOICE TO / NAME:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <b>ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <b>POSTAL ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>TEL (HOME):</b></span>
                           <span><b>TEL (WORK):</b></span>
@@ -573,7 +594,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>FAX:</b></span>
                           <span><b>CELL:</b></span>
@@ -581,12 +602,12 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "0 5px" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <b>E-MAIL:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "0 5px" }}>
+                      <td style={{ padding: "2px 5px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>CUSTOMER VAT NO:</b></span>
                           <span><b>O/NO:</b></span>
@@ -603,8 +624,8 @@ export default function Page() {
                     <tr>
                       <td
                         style={{
-                          borderBottom: "1px solid black",
-                          padding: "4px",
+                          borderBottom: "1px solid #000",
+                          padding: "6px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -614,8 +635,8 @@ export default function Page() {
                     <tr>
                       <td
                         style={{
-                          borderBottom: "1px solid black",
-                          padding: "7px 4px",
+                          borderBottom: "1px solid #000",
+                          padding: "8px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -625,8 +646,8 @@ export default function Page() {
                     <tr>
                       <td
                         style={{
-                          borderBottom: "1px solid black",
-                          padding: "7px 4px",
+                          borderBottom: "1px solid #000",
+                          padding: "8px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -636,8 +657,8 @@ export default function Page() {
                     <tr>
                       <td
                         style={{
-                          borderBottom: "1px solid black",
-                          padding: "7px 4px",
+                          borderBottom: "1px solid #000",
+                          padding: "8px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -647,8 +668,8 @@ export default function Page() {
                     <tr>
                       <td
                         style={{
-                          borderBottom: "1px solid black",
-                          padding: "7px 4px",
+                          borderBottom: "1px solid #000",
+                          padding: "8px 4px",
                           textAlign: "center",
                         }}
                       >
@@ -656,7 +677,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "7px 4px", textAlign: "center" }}>
+                      <td style={{ padding: "8px 4px", textAlign: "center" }}>
                         INTERNAL ORDER No:
                       </td>
                     </tr>
@@ -669,8 +690,14 @@ export default function Page() {
 
         <table
           border={1}
-          cellPadding={4}
-          style={{ width: "100%", marginTop: 4, borderCollapse: "collapse", fontSize: 12 }}
+          cellPadding={6}
+          style={{
+            width: "100%",
+            marginTop: 2,
+            borderCollapse: "collapse",
+            fontSize: 12,
+            border: "2px solid #000",
+          }}
         >
           <thead>
             <tr>
@@ -709,48 +736,163 @@ export default function Page() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: 18, display: "flex", gap: 14 }}>
-          <div style={{ flex: 1, border: "1px solid #000", padding: 8 }}>
-            <p style={{ margin: "0 0 8px 0" }}><b>CUSTOMER CONFIRMATION</b></p>
-            <p style={{ margin: "0 0 8px 0" }}>Name: __________________________</p>
-            <p style={{ margin: "0 0 8px 0" }}>Date: __________________________</p>
-            <p style={{ margin: 0 }}>Signature: _____________________</p>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            marginTop: 8,
+            border: "2px solid #000",
+            tableLayout: "fixed",
+          }}
+        >
+          <tbody>
+            <tr>
+              <td style={{ width: "12%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
+                SUPPLY ONLY
+              </td>
+              <td style={{ width: "14%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
+                SUPPLY AND INSTALL
+              </td>
+              <td style={{ width: "13%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
+                DELIVERY PERIOD
+              </td>
+              <td style={{ width: "6%", borderRight: "1px solid #000", padding: "4px 6px" }} />
+              <td style={{ padding: "4px 6px", fontWeight: 700 }}>
+                WORKING DAYS FROM CONFIRMATION
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div
+          style={{
+            borderLeft: "2px solid #000",
+            borderRight: "2px solid #000",
+            borderBottom: "2px solid #000",
+            color: "red",
+            textAlign: "center",
+            fontWeight: 700,
+            padding: "6px 8px",
+            fontSize: 12,
+          }}
+        >
+          PRICES QUOTED ARE SUBJECT TO VARIATION SHOULD THE ABOVE DIFFER IN PRODUCT, DESIGN OR SIZE
+        </div>
+
+        <div style={{ display: "flex", gap: 0 }}>
+          <div
+            style={{
+              flex: 1.05,
+              borderLeft: "2px solid #000",
+              borderRight: "1px solid #000",
+              borderBottom: "2px solid #000",
+              background: "#fff",
+            }}
+          >
+            <div style={{ padding: "4px 8px", borderBottom: "1px solid #000", fontWeight: 700 }}>
+              FIRST NATIONAL BANK
+            </div>
+            <div style={{ padding: "4px 8px", textAlign: "center", lineHeight: "20px" }}>
+              <div><b>Branch:</b> 221325</div>
+              <div><b>Acc:</b> 62180140156</div>
+              <div><b>Name:</b> Venetian Blind Centre</div>
+              <div><b>REFERENCE:</b> 0</div>
+            </div>
+            <div
+              style={{
+                background: "#000",
+                color: "#fff",
+                textAlign: "center",
+                padding: "8px 6px",
+                marginTop: 4,
+                lineHeight: "18px",
+                fontSize: 12,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>PAYMENT TERMS</div>
+              <div>AN 80% DEPOSIT ON CONFIRMATION.</div>
+              <div>BALANCE TO BE SETTLED IN FULL BEFORE</div>
+              <div>INSTALLATION OR COLLECTION</div>
+            </div>
           </div>
 
-          <div style={{ flex: 2, border: "1px solid #000", padding: 8 }}>
-            <p style={{ margin: "0 0 8px 0" }}><b>PLEASE NOTE THE FOLLOWING:</b></p>
-
-            <p style={{ margin: "0 0 6px 0", fontSize: 11.5, lineHeight: "16px" }}>
-              All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
-            </p>
-
-            <p style={{ margin: "0 0 6px 0", fontSize: 11.5, lineHeight: "16px" }}>
-              We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.
-            </p>
-
-            <p style={{ margin: "0 0 6px 0", fontSize: 11.5, lineHeight: "16px" }}>
-              All awnings and outdoor blinds installed are not guaranteed against storm damage.
-            </p>
-
-            <p style={{ margin: 0, fontSize: 11.5, lineHeight: "16px" }}>
-              For security measures all cash payments to be made instore.
-            </p>
+          <div
+            style={{
+              flex: 1.15,
+              borderRight: "1px solid #000",
+              borderBottom: "2px solid #000",
+              padding: 8,
+            }}
+          >
+            <p style={{ margin: "0 0 8px 0", fontWeight: 700 }}>CUSTOMER CONFIRMATION</p>
+            <p style={{ margin: "0 0 10px 0" }}>NAME: __________________________</p>
+            <p style={{ margin: "0 0 10px 0" }}>DATE: __________________________</p>
+            <p style={{ margin: 0 }}>SIGNATURE: _____________________</p>
           </div>
 
-          <div style={{ flex: 1, border: "1px solid #000", padding: 8 }}>
-            <p style={{ textAlign: "center", margin: "0 0 14px 0" }}>
-              <b>QUOTE VALID FOR 7 DAYS</b>
-            </p>
+          <div
+            style={{
+              flex: 2.4,
+              borderRight: "1px solid #000",
+              borderBottom: "2px solid #000",
+              padding: 8,
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <p style={{ margin: 0, fontWeight: 700 }}>PLEASE NOTE THE FOLLOWING:-</p>
+              <p style={{ margin: 0, fontWeight: 700 }}>QUOTE VALID FOR 7 DAYS</p>
+            </div>
 
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 8, fontSize: 11.5, lineHeight: "17px" }}>
+              <p style={{ margin: "0 0 6px 0" }}>
+                All wood and bamboo blinds will be subject to imperfections, warpage & colour variations
+                inherent in natural wood.
+              </p>
+
+              <p style={{ margin: "0 0 6px 0" }}>
+                We are not responsible for any damage whilst drilling through wall, brick, tile, granite &
+                marble during installation.
+              </p>
+
+              <p style={{ margin: "0 0 6px 0" }}>
+                All awnings and outdoor blinds installed are not guaranteed against storm damage.
+              </p>
+
+              <p style={{ margin: 0 }}>
+                For security measures all cash payments to be made instore.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              flex: 0.95,
+              borderRight: "2px solid #000",
+              borderBottom: "2px solid #000",
+              padding: 8,
+            }}
+          >
+            <div style={{ marginTop: 4 }}>
               <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
-                <span>Subtotal:</span>
-                <span>{currency(subtotal)}</span>
+                <span>SUBTOTAL</span>
+                <span>R {currency(subtotal)}</span>
               </p>
 
               <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
-                <span>VAT:</span>
-                <span>{currency(vat)}</span>
+                <span>DISCOUNT</span>
+                <span>R 0.00</span>
+              </p>
+
+              <div style={{ borderTop: "1px solid #000", margin: "8px 0" }} />
+
+              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0", fontWeight: 700 }}>
+                <span>SUBTOTAL</span>
+                <span>R {currency(subtotal)}</span>
+              </p>
+
+              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
+                <span>VAT</span>
+                <span>R {currency(vat)}</span>
               </p>
 
               <div
@@ -764,13 +906,13 @@ export default function Page() {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: 700,
                     margin: 0,
                   }}
                 >
-                  <span>TOTAL:</span>
-                  <span>{currency(grandTotal)}</span>
+                  <span>TOTAL</span>
+                  <span>R {currency(grandTotal)}</span>
                 </p>
               </div>
             </div>
