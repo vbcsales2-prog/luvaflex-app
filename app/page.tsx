@@ -523,38 +523,215 @@ export default function Page() {
           background: "#fff",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <h2>VENETIAN BLIND CENTRE</h2>
-            <p>Interior & Exterior Window Solutions</p>
-            <p>Tel: 033 394 1941</p>
-            <p>Email: info@venetian.co.za</p>
-          </div>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            border: "2px solid black",
+            marginBottom: 20,
+          }}
+        >
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  width: "38%",
+                  borderRight: "2px solid black",
+                  padding: 8,
+                  verticalAlign: "top",
+                }}
+              >
+                <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                  <div style={{ flex: 1 }}>
+                    <img
+                      src="/logo.png"
+                      alt="Venetian Blind Centre"
+                      style={{ width: "100%", maxWidth: 420, height: "auto", display: "block" }}
+                    />
 
-          <div>
-            <p>
-              <b>Quote No:</b> __________
-            </p>
-            <p>
-              <b>Date:</b> __________
-            </p>
-            <p>
-              <b>Salesperson:</b> __________
-            </p>
-          </div>
-        </div>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        fontSize: 13,
+                        lineHeight: "18px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div>442 Greyling Street</div>
+                      <div>Pietermaritzburg</div>
+                      <div>Tel: 033 394 1941</div>
+                      <div>E-mail: info@venetian.co.za</div>
+                      <div>www.venetian.co.za</div>
+                      <div>VAT Reg. No: 4390246884</div>
+                    </div>
+                  </div>
 
-        <div style={{ marginTop: 20 }}>
-          <p>
-            <b>Client Name:</b> __________________________
-          </p>
-          <p>
-            <b>Contact:</b> __________________________
-          </p>
-          <p>
-            <b>Address:</b> __________________________
-          </p>
-        </div>
+                  <div
+                    style={{
+                      width: 150,
+                      border: "1px solid black",
+                      padding: 8,
+                      fontSize: 11,
+                      lineHeight: "16px",
+                      textAlign: "center",
+                      marginTop: 10,
+                    }}
+                  >
+                    <div>
+                      <b>MONDAY TO FRIDAY - 7:30am TO 4:30pm</b>
+                    </div>
+                    <div>
+                      <b>CLOSED FRIDAYS BETWEEN</b>
+                    </div>
+                    <div>
+                      <b>11:30 & 2pm</b>
+                    </div>
+                    <div style={{ marginTop: 6 }}>
+                      <b>SATURDAY - 7:30am TO 12:30pm</b>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td
+                style={{
+                  width: "42%",
+                  borderRight: "2px solid black",
+                  verticalAlign: "top",
+                  padding: 0,
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                        <b>INVOICE TO / NAME:</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                        <b>ADDRESS:</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                        <b>POSTAL ADDRESS:</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span>
+                            <b>TEL: (HOME)</b>
+                          </span>
+                          <span>
+                            <b>TEL: (WORK)</b>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span>
+                            <b>FAX:</b>
+                          </span>
+                          <span>
+                            <b>CELL:</b>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                        <b>E-MAIL:</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "4px 6px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span>
+                            <b>CUSTOMER VAT NO:</b>
+                          </span>
+                          <span>
+                            <b>O/NO:</b>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+
+              <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <tbody>
+                    <tr>
+                      <td
+                        style={{
+                          borderBottom: "1px solid black",
+                          padding: "4px 6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <b>QUOTATION</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{
+                          borderBottom: "1px solid black",
+                          padding: "8px 6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        Quote No:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{
+                          borderBottom: "1px solid black",
+                          padding: "8px 6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        SALESPERSON:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{
+                          borderBottom: "1px solid black",
+                          padding: "8px 6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        DATE:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{
+                          borderBottom: "1px solid black",
+                          padding: "8px 6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        CONTACT PERSON:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "8px 6px", textAlign: "center" }}>
+                        INTERNAL ORDER No:
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         <table
           border={1}
@@ -590,7 +767,7 @@ export default function Page() {
                 <td>{displayValue(item.fixture)}</td>
                 <td>{displayValue(item.control)}</td>
                 <td>{displayValue(item.remarks)}</td>
-                <td style={{ textAlign: "right" }}>
+                <td style={{ textAlign: "right", fontWeight: 600 }}>
                   {item.pending ? "-" : item.custom ? "-" : item.price ? currency(item.price) : "-"}
                 </td>
               </tr>
@@ -613,19 +790,19 @@ export default function Page() {
               <b>PLEASE NOTE THE FOLLOWING:</b>
             </p>
 
-            <p style={{ fontSize: 13 }}>
+            <p style={{ fontSize: 12, lineHeight: "18px" }}>
               All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
             </p>
 
-            <p style={{ fontSize: 13 }}>
+            <p style={{ fontSize: 12, lineHeight: "18px" }}>
               We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.
             </p>
 
-            <p style={{ fontSize: 13 }}>
+            <p style={{ fontSize: 12, lineHeight: "18px" }}>
               All awnings and outdoor blinds installed are not guaranteed against storm damage.
             </p>
 
-            <p style={{ fontSize: 13 }}>
+            <p style={{ fontSize: 12, lineHeight: "18px" }}>
               For security measures all cash payments to be made instore.
             </p>
           </div>
