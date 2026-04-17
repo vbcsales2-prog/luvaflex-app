@@ -24,22 +24,18 @@ type Item = {
   type: BlindType;
   width: number | "";
   drop: number | "";
-  qty: number;
-
   fabric: string;
   colour: string;
   slat: string;
   fixture: string;
   control: string;
   remarks: string;
-
   manualPrice?: number;
   editingPrice?: boolean;
 };
 
 type ComputedItem = Item & {
-  unit: number;
-  total: number;
+  price: number;
   pending?: boolean;
   custom?: boolean;
   manual?: boolean;
@@ -150,6 +146,11 @@ function defaultRemarks(type: BlindType): string {
   return type === "Outdoor" ? "With Window" : "";
 }
 
+function displayValue(value: string | number | "" | undefined): string {
+  if (value === "" || value === undefined) return "-";
+  return String(value);
+}
+
 export default function Page() {
   const [items, setItems] = useState<Item[]>([
     {
@@ -158,7 +159,6 @@ export default function Page() {
       type: "Outdoor",
       width: "",
       drop: "",
-      qty: 1,
       fabric: "Sheerweave",
       colour: "",
       slat: "",
@@ -169,7 +169,7 @@ export default function Page() {
   ]);
 
   const update = <K extends keyof Item>(id: string, field: K, value: Item[K]) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, [field]: value } : i)));
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
   };
 
   const addItem = () => {
@@ -181,7 +181,6 @@ export default function Page() {
         type: "Outdoor",
         width: "",
         drop: "",
-        qty: 1,
         fabric: "Sheerweave",
         colour: "",
         slat: "",
@@ -193,19 +192,18 @@ export default function Page() {
   };
 
   const computed: ComputedItem[] = useMemo(() => {
-    return items.map((i) => {
-      let unit = 0;
-      let total = 0;
-      let manual = false;
+    return items.map((item) => {
+      let price = 0;
       let pending = false;
       let custom = false;
+      let manual = false;
 
-      if (i.type === "Outdoor") {
-        if (i.width === "" || i.drop === "") {
+      if (item.type === "Outdoor") {
+        if (item.width === "" || item.drop === "") {
           pending = true;
         } else {
-          const widthMm = Math.ceil(Number(i.width) * 1000);
-          const dropMm = Math.ceil(Number(i.drop) * 1000);
+          const widthMm = Math.ceil(Number(item.width) * 1000);
+          const dropMm = Math.ceil(Number(item.drop) * 1000);
 
           const roundedWidth = roundUp(widthMm, WIDTH_STEPS_MM);
           const roundedDrop = roundUp(dropMm, DROP_STEPS_MM);
@@ -214,24 +212,22 @@ export default function Page() {
             custom = true;
           } else {
             const base = BASE_PRICE_GRID[roundedDrop][roundedWidth];
-            const addon = i.remarks === "With Window" ? CLEAR_WINDOW_ADDON[roundedWidth] : 0;
-            unit = base + addon;
+            const addon = item.remarks === "With Window" ? CLEAR_WINDOW_ADDON[roundedWidth] : 0;
+            price = base + addon;
           }
         }
       } else {
         manual = true;
-        if (typeof i.manualPrice === "number" && !Number.isNaN(i.manualPrice)) {
-          unit = i.manualPrice;
+        if (typeof item.manualPrice === "number" && !Number.isNaN(item.manualPrice)) {
+          price = item.manualPrice;
         }
       }
 
-      total = unit * (Number(i.qty) || 0);
-
-      return { ...i, unit, total, manual, pending, custom };
+      return { ...item, price, pending, custom, manual };
     });
   }, [items]);
 
-  const subtotal = computed.reduce((s, i) => s + i.total, 0);
+  const subtotal = computed.reduce((sum, item) => sum + item.price, 0);
   const vat = subtotal * VAT_RATE;
   const grandTotal = subtotal + vat;
 
@@ -239,108 +235,135 @@ export default function Page() {
     <div style={{ padding: 20, fontFamily: "Arial" }}>
       <h1>Luvaflex Quote App</h1>
 
-      <table border={1} cellPadding={6} style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
+      <table
+        border={1}
+        cellPadding={6}
+        style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}
+      >
         <thead>
           <tr>
             <th>Area</th>
-            <th>Type</th>
             <th>Width</th>
             <th>Drop</th>
+            <th>Type</th>
             <th>Fabric</th>
             <th>Colour</th>
-            <th>Slat</th>
+            <th>Slat Width</th>
             <th>Fixture</th>
             <th>Control</th>
             <th>Remarks</th>
-            <th>Qty</th>
-            <th>Unit</th>
-            <th>Total</th>
+            <th>Price</th>
           </tr>
         </thead>
 
         <tbody>
-          {computed.map((i) => (
-            <tr key={i.id}>
+          {computed.map((item) => (
+            <tr key={item.id}>
               <td>
-                <input value={i.area} onChange={(e) => update(i.id, "area", e.target.value)} />
+                <input
+                  value={item.area}
+                  onChange={(e) => update(item.id, "area", e.target.value)}
+                />
+              </td>
+
+              <td>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={item.width}
+                  onChange={(e) =>
+                    update(item.id, "width", e.target.value === "" ? "" : Number(e.target.value))
+                  }
+                />
+              </td>
+
+              <td>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={item.drop}
+                  onChange={(e) =>
+                    update(item.id, "drop", e.target.value === "" ? "" : Number(e.target.value))
+                  }
+                />
               </td>
 
               <td>
                 <select
-                  value={i.type}
+                  value={item.type}
                   onChange={(e) => {
                     const newType = e.target.value as BlindType;
                     const controls = getControlOptions(newType);
-                    update(i.id, "type", newType);
-                    update(i.id, "control", controls[0]);
-                    update(i.id, "fabric", defaultFabric(newType));
-                    update(i.id, "remarks", defaultRemarks(newType));
-                    update(i.id, "slat", defaultSlat(newType));
-                    update(i.id, "manualPrice", undefined);
-                    update(i.id, "editingPrice", false);
+                    update(item.id, "type", newType);
+                    update(item.id, "control", controls[0]);
+                    update(item.id, "fabric", defaultFabric(newType));
+                    update(item.id, "remarks", defaultRemarks(newType));
+                    update(item.id, "slat", defaultSlat(newType));
+                    update(item.id, "manualPrice", undefined);
+                    update(item.id, "editingPrice", false);
                   }}
                 >
-                  {TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
                     </option>
                   ))}
                 </select>
               </td>
 
               <td>
-                <input
-                  type="number"
-                  step="0.001"
-                  value={i.width}
-                  onChange={(e) => update(i.id, "width", e.target.value === "" ? "" : Number(e.target.value))}
-                />
-              </td>
-
-              <td>
-                <input
-                  type="number"
-                  step="0.001"
-                  value={i.drop}
-                  onChange={(e) => update(i.id, "drop", e.target.value === "" ? "" : Number(e.target.value))}
-                />
-              </td>
-
-              <td>
-                {i.type === "Outdoor" ? (
-                  <select value={i.fabric} onChange={(e) => update(i.id, "fabric", e.target.value)}>
+                {item.type === "Outdoor" ? (
+                  <select
+                    value={item.fabric}
+                    onChange={(e) => update(item.id, "fabric", e.target.value)}
+                  >
                     <option value="Sheerweave">Sheerweave</option>
                     <option value="PVC">PVC</option>
                     <option value="Ribtext">Ribtext</option>
                   </select>
                 ) : (
-                  <input value={i.fabric} onChange={(e) => update(i.id, "fabric", e.target.value)} />
+                  <input
+                    value={item.fabric}
+                    onChange={(e) => update(item.id, "fabric", e.target.value)}
+                  />
                 )}
               </td>
 
               <td>
-                <input value={i.colour} onChange={(e) => update(i.id, "colour", e.target.value)} />
+                <input
+                  value={item.colour}
+                  onChange={(e) => update(item.id, "colour", e.target.value)}
+                />
               </td>
 
               <td>
-                {getSlatMode(i.type) === "venetian" ? (
-                  <select value={i.slat || "25mm"} onChange={(e) => update(i.id, "slat", e.target.value)}>
+                {getSlatMode(item.type) === "venetian" ? (
+                  <select
+                    value={item.slat || "25mm"}
+                    onChange={(e) => update(item.id, "slat", e.target.value)}
+                  >
                     <option value="25mm">25mm</option>
                     <option value="50mm">50mm</option>
                   </select>
-                ) : getSlatMode(i.type) === "vertical" ? (
-                  <select value={i.slat || "90mm"} onChange={(e) => update(i.id, "slat", e.target.value)}>
+                ) : getSlatMode(item.type) === "vertical" ? (
+                  <select
+                    value={item.slat || "90mm"}
+                    onChange={(e) => update(item.id, "slat", e.target.value)}
+                  >
                     <option value="90mm">90mm</option>
                     <option value="127mm">127mm</option>
                     <option value="250mm">250mm</option>
                   </select>
                 ) : (
-                  "N/A"
+                  <span>N/A</span>
                 )}
               </td>
 
               <td>
-                <select value={i.fixture} onChange={(e) => update(i.id, "fixture", e.target.value)}>
+                <select
+                  value={item.fixture}
+                  onChange={(e) => update(item.id, "fixture", e.target.value)}
+                >
                   <option value="Rec">Rec</option>
                   <option value="F/F">F/F</option>
                   <option value="Custom">Custom</option>
@@ -348,65 +371,62 @@ export default function Page() {
               </td>
 
               <td>
-                <select value={i.control} onChange={(e) => update(i.id, "control", e.target.value)}>
-                  {getControlOptions(i.type).map((c) => (
-                    <option key={c} value={c}>
-                      {c}
+                <select
+                  value={item.control}
+                  onChange={(e) => update(item.id, "control", e.target.value)}
+                >
+                  {getControlOptions(item.type).map((option) => (
+                    <option key={option} value={option}>
+                      {option}
                     </option>
                   ))}
                 </select>
               </td>
 
               <td>
-                {i.type === "Outdoor" ? (
-                  <select value={i.remarks} onChange={(e) => update(i.id, "remarks", e.target.value)}>
+                {item.type === "Outdoor" ? (
+                  <select
+                    value={item.remarks}
+                    onChange={(e) => update(item.id, "remarks", e.target.value)}
+                  >
                     <option value="With Window">With Window</option>
                     <option value="Without Window">Without Window</option>
                   </select>
                 ) : (
-                  <input value={i.remarks} onChange={(e) => update(i.id, "remarks", e.target.value)} />
+                  <input
+                    value={item.remarks}
+                    onChange={(e) => update(item.id, "remarks", e.target.value)}
+                  />
                 )}
               </td>
 
-              <td>
-                <input
-                  type="number"
-                  value={i.qty}
-                  onChange={(e) => update(i.id, "qty", Math.max(0, Number(e.target.value) || 0))}
-                />
-              </td>
-
-              <td>
-                {i.manual ? (
-                  i.editingPrice ? (
+              <td style={{ textAlign: "right", minWidth: 90 }}>
+                {item.manual ? (
+                  item.editingPrice ? (
                     <input
                       type="number"
-                      defaultValue={i.manualPrice ?? ""}
+                      defaultValue={item.manualPrice ?? ""}
                       onBlur={(e) => {
-                        update(i.id, "manualPrice", Number(e.target.value) || 0);
-                        update(i.id, "editingPrice", false);
+                        update(item.id, "manualPrice", Number(e.target.value) || 0);
+                        update(item.id, "editingPrice", false);
                       }}
                       autoFocus
                     />
                   ) : (
                     <span
                       style={{ cursor: "pointer", color: "blue" }}
-                      onClick={() => update(i.id, "editingPrice", true)}
+                      onClick={() => update(item.id, "editingPrice", true)}
                     >
-                      {i.manualPrice ? currency(i.manualPrice) : "Manual Entry"}
+                      {item.manualPrice ? currency(item.manualPrice) : "Manual Entry"}
                     </span>
                   )
-                ) : i.pending ? (
+                ) : item.pending ? (
                   "-"
-                ) : i.custom ? (
+                ) : item.custom ? (
                   <span style={{ color: "red", fontWeight: 600 }}>Custom Quote</span>
                 ) : (
-                  currency(i.unit)
+                  currency(item.price)
                 )}
-              </td>
-
-              <td>
-                {i.pending ? "-" : i.custom ? "-" : i.total ? currency(i.total) : "-"}
               </td>
             </tr>
           ))}
@@ -422,87 +442,109 @@ export default function Page() {
         <p>VAT: {currency(vat)}</p>
         <h2>Total: {currency(grandTotal)}</h2>
       </div>
-      {/* ================= QUOTE PREVIEW ================= */}
 
-<div style={{
-  marginTop: 50,
-  padding: 20,
-  border: "2px solid #000",
-  background: "#fff"
-}}>
+      <div
+        style={{
+          marginTop: 50,
+          padding: 20,
+          border: "2px solid #000",
+          background: "#fff",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <h2>VENETIAN BLIND CENTRE</h2>
+            <p>Interior & Exterior Window Solutions</p>
+            <p>Tel: 033 394 1941</p>
+            <p>Email: info@venetian.co.za</p>
+          </div>
 
-  {/* HEADER */}
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
+            <p>
+              <b>Quote No:</b> __________
+            </p>
+            <p>
+              <b>Date:</b> __________
+            </p>
+            <p>
+              <b>Salesperson:</b> __________
+            </p>
+          </div>
+        </div>
 
-    {/* COMPANY */}
-    <div>
-      <h2>VENETIAN BLIND CENTRE</h2>
-      <p>Interior & Exterior Window Solutions</p>
-      <p>Tel: 033 394 1941</p>
-      <p>Email: info@venetian.co.za</p>
-    </div>
+        <div style={{ marginTop: 20 }}>
+          <p>
+            <b>Client Name:</b> __________________________
+          </p>
+          <p>
+            <b>Contact:</b> __________________________
+          </p>
+          <p>
+            <b>Address:</b> __________________________
+          </p>
+        </div>
 
-    {/* QUOTE INFO */}
-    <div>
-      <p><b>Quote No:</b> __________</p>
-      <p><b>Date:</b> __________</p>
-      <p><b>Salesperson:</b> __________</p>
-    </div>
+        <table
+          border={1}
+          cellPadding={6}
+          style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}
+        >
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Width</th>
+              <th>Drop</th>
+              <th>Type</th>
+              <th>Fabric</th>
+              <th>Colour</th>
+              <th>Slat Width</th>
+              <th>Fixture</th>
+              <th>Control</th>
+              <th>Remarks</th>
+              <th style={{ textAlign: "right" }}>Price</th>
+            </tr>
+          </thead>
 
-  </div>
+          <tbody>
+            {computed.map((item) => (
+              <tr key={item.id}>
+                <td>{displayValue(item.area)}</td>
+                <td>{displayValue(item.width)}</td>
+                <td>{displayValue(item.drop)}</td>
+                <td>{displayValue(item.type)}</td>
+                <td>{displayValue(item.fabric)}</td>
+                <td>{displayValue(item.colour)}</td>
+                <td>
+                  {getSlatMode(item.type) === "na" ? "N/A" : displayValue(item.slat)}
+                </td>
+                <td>{displayValue(item.fixture)}</td>
+                <td>{displayValue(item.control)}</td>
+                <td>{displayValue(item.remarks)}</td>
+                <td style={{ textAlign: "right" }}>
+                  {item.pending ? "-" : item.custom ? "-" : item.price ? currency(item.price) : "-"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-  {/* CLIENT */}
-  <div style={{ marginTop: 20 }}>
-    <p><b>Client Name:</b> __________________________</p>
-    <p><b>Contact:</b> __________________________</p>
-    <p><b>Address:</b> __________________________</p>
-  </div>
+        <div style={{ marginTop: 20, textAlign: "right" }}>
+          <p>
+            <b>Subtotal:</b> {currency(subtotal)}
+          </p>
+          <p>
+            <b>VAT:</b> {currency(vat)}
+          </p>
+          <h3>Total: {currency(grandTotal)}</h3>
+        </div>
 
-  {/* TABLE */}
-  <table border={1} cellPadding={6} style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
-    <thead>
-      <tr>
-        <th>Area</th>
-        <th>Type</th>
-        <th>Width (m)</th>
-        <th>Drop (m)</th>
-        <th>Fabric</th>
-        <th>Colour</th>
-        <th>Control</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {computed.map(i => (
-        <tr key={i.id}>
-          <td>{i.area}</td>
-          <td>{i.type}</td>
-          <td>{i.width}</td>
-          <td>{i.drop}</td>
-          <td>{i.fabric}</td>
-          <td>{i.colour}</td>
-          <td>{i.control}</td>
-          <td>{i.total ? currency(i.total) : "-"}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-
-  {/* TOTALS */}
-  <div style={{ marginTop: 20, textAlign: "right" }}>
-    <p><b>Subtotal:</b> {currency(subtotal)}</p>
-    <p><b>VAT:</b> {currency(vat)}</p>
-    <h3>Total: {currency(grandTotal)}</h3>
-  </div>
-
-  {/* NOTES */}
-  <div style={{ marginTop: 20 }}>
-    <p><b>Notes:</b></p>
-    <p>All quotations are valid for 7 days. Lead time 10–12 working days.</p>
-  </div>
-
-</div>
+        <div style={{ marginTop: 20 }}>
+          <p>
+            <b>Notes:</b>
+          </p>
+          <p>All quotations are valid for 7 days. Lead time 10–12 working days.</p>
+        </div>
+      </div>
     </div>
   );
 }
