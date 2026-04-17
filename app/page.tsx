@@ -484,7 +484,7 @@ export default function Page() {
                 style={{
                   width: "38%",
                   borderRight: "2px solid black",
-                  padding: 8,
+                  padding: "4px 8px",
                   verticalAlign: "top",
                 }}
               >
@@ -493,14 +493,20 @@ export default function Page() {
                     <img
                       src="/logo.png"
                       alt="Venetian Blind Centre"
-                      style={{ width: "100%", maxWidth: 520, height: "auto", display: "block" }}
+                      style={{
+                        width: "100%",
+                        maxWidth: 520,
+                        height: "auto",
+                        display: "block",
+                        marginBottom: 4,
+                      }}
                     />
 
                     <div
                       style={{
-                        marginTop: 8,
+                        marginTop: 6,
                         fontSize: 13,
-                        lineHeight: "18px",
+                        lineHeight: "16px",
                         textAlign: "left",
                       }}
                     >
@@ -545,22 +551,22 @@ export default function Page() {
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                   <tbody>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
                         <b>INVOICE TO / NAME:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
                         <b>ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
                         <b>POSTAL ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>TEL (HOME):</b></span>
                           <span><b>TEL (WORK):</b></span>
@@ -568,7 +574,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>FAX:</b></span>
                           <span><b>CELL:</b></span>
@@ -576,12 +582,12 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "1px 6px" }}>
                         <b>E-MAIL:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "2px 6px" }}>
+                      <td style={{ padding: "1px 6px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span><b>CUSTOMER VAT NO:</b></span>
                           <span><b>O/NO:</b></span>
@@ -610,7 +616,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "11px 6px",
+                          padding: "9px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -621,7 +627,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "11px 6px",
+                          padding: "9px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -632,7 +638,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "11px 6px",
+                          padding: "9px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -643,7 +649,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "11px 6px",
+                          padding: "9px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -651,7 +657,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "11px 6px", textAlign: "center" }}>
+                      <td style={{ padding: "9px 6px", textAlign: "center" }}>
                         INTERNAL ORDER No:
                       </td>
                     </tr>
@@ -665,7 +671,7 @@ export default function Page() {
         <table
           border={1}
           cellPadding={6}
-          style={{ width: "100%", marginTop: 10, borderCollapse: "collapse", fontSize: 13 }}
+          style={{ width: "100%", marginTop: 6, borderCollapse: "collapse", fontSize: 13 }}
         >
           <thead>
             <tr>
