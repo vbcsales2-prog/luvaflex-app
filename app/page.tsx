@@ -72,82 +72,28 @@ const DROP_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500];
 
 const BASE_PRICE_GRID: Record<number, Record<number, number>> = {
   1000: {
-    1000: 1566,
-    1500: 1851,
-    2000: 2136,
-    2500: 2421,
-    3000: 2706,
-    3500: 2991,
-    4000: 3276,
-    4500: 3561,
-    5000: 3846,
-    5500: 4131,
-    6000: 4416,
+    1000: 1566, 1500: 1851, 2000: 2136, 2500: 2421, 3000: 2706,
+    3500: 2991, 4000: 3276, 4500: 3561, 5000: 3846, 5500: 4131, 6000: 4416,
   },
   1500: {
-    1000: 1746,
-    1500: 2091,
-    2000: 2436,
-    2500: 2781,
-    3000: 3126,
-    3500: 3471,
-    4000: 3816,
-    4500: 4161,
-    5000: 4506,
-    5500: 4851,
-    6000: 5196,
+    1000: 1746, 1500: 2091, 2000: 2436, 2500: 2781, 3000: 3126,
+    3500: 3471, 4000: 3816, 4500: 4161, 5000: 4506, 5500: 4851, 6000: 5196,
   },
   2000: {
-    1000: 1926,
-    1500: 2331,
-    2000: 2736,
-    2500: 3141,
-    3000: 3546,
-    3500: 3951,
-    4000: 4356,
-    4500: 4761,
-    5000: 5166,
-    5500: 5571,
-    6000: 5976,
+    1000: 1926, 1500: 2331, 2000: 2736, 2500: 3141, 3000: 3546,
+    3500: 3951, 4000: 4356, 4500: 4761, 5000: 5166, 5500: 5571, 6000: 5976,
   },
   2500: {
-    1000: 2106,
-    1500: 2571,
-    2000: 3036,
-    2500: 3501,
-    3000: 3966,
-    3500: 4431,
-    4000: 4896,
-    4500: 5361,
-    5000: 5826,
-    5500: 6291,
-    6000: 6756,
+    1000: 2106, 1500: 2571, 2000: 3036, 2500: 3501, 3000: 3966,
+    3500: 4431, 4000: 4896, 4500: 5361, 5000: 5826, 5500: 6291, 6000: 6756,
   },
   3000: {
-    1000: 2286,
-    1500: 2811,
-    2000: 3336,
-    2500: 3861,
-    3000: 4386,
-    3500: 4911,
-    4000: 5436,
-    4500: 5961,
-    5000: 6486,
-    5500: 7011,
-    6000: 7536,
+    1000: 2286, 1500: 2811, 2000: 3336, 2500: 3861, 3000: 4386,
+    3500: 4911, 4000: 5436, 4500: 5961, 5000: 6486, 5500: 7011, 6000: 7536,
   },
   3500: {
-    1000: 2466,
-    1500: 3051,
-    2000: 3636,
-    2500: 4221,
-    3000: 4806,
-    3500: 5391,
-    4000: 5976,
-    4500: 6561,
-    5000: 7146,
-    5500: 7731,
-    6000: 8316,
+    1000: 2466, 1500: 3051, 2000: 3636, 2500: 4221, 3000: 4806,
+    3500: 5391, 4000: 5976, 4500: 6561, 5000: 7146, 5500: 7731, 6000: 8316,
   },
 };
 
@@ -310,7 +256,7 @@ export default function Page() {
       <table
         border={1}
         cellPadding={6}
-        style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}
+        style={{ width: "100%", marginTop: 20, borderCollapse: "collapse", fontSize: 13 }}
       >
         <thead>
           <tr>
@@ -518,7 +464,7 @@ export default function Page() {
       <div
         style={{
           marginTop: 50,
-          padding: 20,
+          padding: 10,
           border: "2px solid #000",
           background: "#fff",
         }}
@@ -528,7 +474,8 @@ export default function Page() {
             width: "100%",
             borderCollapse: "collapse",
             border: "2px solid black",
-            marginBottom: 20,
+            marginBottom: 18,
+            tableLayout: "fixed",
           }}
         >
           <tbody>
@@ -546,7 +493,7 @@ export default function Page() {
                     <img
                       src="/logo.png"
                       alt="Venetian Blind Centre"
-                      style={{ width: "100%", maxWidth: 420, height: "auto", display: "block" }}
+                      style={{ width: "100%", maxWidth: 520, height: "auto", display: "block" }}
                     />
 
                     <div
@@ -554,7 +501,7 @@ export default function Page() {
                         marginTop: 8,
                         fontSize: 13,
                         lineHeight: "18px",
-                        textAlign: "center",
+                        textAlign: "left",
                       }}
                     >
                       <div>442 Greyling Street</div>
@@ -575,20 +522,14 @@ export default function Page() {
                       lineHeight: "16px",
                       textAlign: "center",
                       marginTop: 10,
+                      alignSelf: "flex-start",
                     }}
                   >
-                    <div>
-                      <b>MONDAY TO FRIDAY - 7:30am TO 4:30pm</b>
-                    </div>
-                    <div>
-                      <b>CLOSED FRIDAYS BETWEEN</b>
-                    </div>
-                    <div>
-                      <b>11:30 & 2pm</b>
-                    </div>
-                    <div style={{ marginTop: 6 }}>
-                      <b>SATURDAY - 7:30am TO 12:30pm</b>
-                    </div>
+                    <div><b>MONDAY TO FRIDAY -</b></div>
+                    <div><b>7:30am TO 4:30pm</b></div>
+                    <div style={{ marginTop: 6 }}><b>CLOSED FRIDAYS BETWEEN</b></div>
+                    <div><b>11:30 & 2pm</b></div>
+                    <div style={{ marginTop: 6 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
                   </div>
                 </div>
               </td>
@@ -604,58 +545,46 @@ export default function Page() {
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                   <tbody>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
                         <b>INVOICE TO / NAME:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
                         <b>ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
                         <b>POSTAL ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span>
-                            <b>TEL: (HOME)</b>
-                          </span>
-                          <span>
-                            <b>TEL: (WORK)</b>
-                          </span>
+                          <span><b>TEL (HOME):</b></span>
+                          <span><b>TEL (WORK):</b></span>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span>
-                            <b>FAX:</b>
-                          </span>
-                          <span>
-                            <b>CELL:</b>
-                          </span>
+                          <span><b>FAX:</b></span>
+                          <span><b>CELL:</b></span>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ borderBottom: "1px solid black", padding: "4px 6px" }}>
+                      <td style={{ borderBottom: "1px solid black", padding: "2px 6px" }}>
                         <b>E-MAIL:</b>
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "4px 6px" }}>
+                      <td style={{ padding: "2px 6px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span>
-                            <b>CUSTOMER VAT NO:</b>
-                          </span>
-                          <span>
-                            <b>O/NO:</b>
-                          </span>
+                          <span><b>CUSTOMER VAT NO:</b></span>
+                          <span><b>O/NO:</b></span>
                         </div>
                       </td>
                     </tr>
@@ -670,7 +599,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "4px 6px",
+                          padding: "6px",
                           textAlign: "center",
                         }}
                       >
@@ -681,7 +610,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "8px 6px",
+                          padding: "11px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -692,7 +621,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "8px 6px",
+                          padding: "11px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -703,7 +632,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "8px 6px",
+                          padding: "11px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -714,7 +643,7 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid black",
-                          padding: "8px 6px",
+                          padding: "11px 6px",
                           textAlign: "center",
                         }}
                       >
@@ -722,7 +651,7 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "8px 6px", textAlign: "center" }}>
+                      <td style={{ padding: "11px 6px", textAlign: "center" }}>
                         INTERNAL ORDER No:
                       </td>
                     </tr>
@@ -736,20 +665,20 @@ export default function Page() {
         <table
           border={1}
           cellPadding={6}
-          style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}
+          style={{ width: "100%", marginTop: 10, borderCollapse: "collapse", fontSize: 13 }}
         >
           <thead>
             <tr>
-              <th>Area</th>
-              <th>Width</th>
-              <th>Drop</th>
-              <th>Type</th>
-              <th>Fabric</th>
-              <th>Colour</th>
-              <th>Slat Width</th>
-              <th>Fixture</th>
-              <th>Control</th>
-              <th>Remarks</th>
+              <th style={{ textAlign: "center" }}>Area</th>
+              <th style={{ textAlign: "center" }}>Width</th>
+              <th style={{ textAlign: "center" }}>Drop</th>
+              <th style={{ textAlign: "center" }}>Type</th>
+              <th style={{ textAlign: "center" }}>Fabric</th>
+              <th style={{ textAlign: "center" }}>Colour</th>
+              <th style={{ textAlign: "center" }}>Slat Width</th>
+              <th style={{ textAlign: "center" }}>Fixture</th>
+              <th style={{ textAlign: "center" }}>Control</th>
+              <th style={{ textAlign: "center" }}>Remarks</th>
               <th style={{ textAlign: "right" }}>Price</th>
             </tr>
           </thead>
@@ -775,20 +704,16 @@ export default function Page() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: 30, display: "flex", gap: 20 }}>
+        <div style={{ marginTop: 26, display: "flex", gap: 18 }}>
           <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
-            <p>
-              <b>CUSTOMER CONFIRMATION</b>
-            </p>
+            <p><b>CUSTOMER CONFIRMATION</b></p>
             <p>Name: __________________________</p>
             <p>Date: __________________________</p>
             <p>Signature: _____________________</p>
           </div>
 
           <div style={{ flex: 2, border: "1px solid #000", padding: 10 }}>
-            <p>
-              <b>PLEASE NOTE THE FOLLOWING:</b>
-            </p>
+            <p><b>PLEASE NOTE THE FOLLOWING:</b></p>
 
             <p style={{ fontSize: 12, lineHeight: "18px" }}>
               All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
