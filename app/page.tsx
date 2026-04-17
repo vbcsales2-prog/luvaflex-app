@@ -422,6 +422,87 @@ export default function Page() {
         <p>VAT: {currency(vat)}</p>
         <h2>Total: {currency(grandTotal)}</h2>
       </div>
+      {/* ================= QUOTE PREVIEW ================= */}
+
+<div style={{
+  marginTop: 50,
+  padding: 20,
+  border: "2px solid #000",
+  background: "#fff"
+}}>
+
+  {/* HEADER */}
+  <div style={{ display: "flex", justifyContent: "space-between" }}>
+
+    {/* COMPANY */}
+    <div>
+      <h2>VENETIAN BLIND CENTRE</h2>
+      <p>Interior & Exterior Window Solutions</p>
+      <p>Tel: 033 394 1941</p>
+      <p>Email: info@venetian.co.za</p>
+    </div>
+
+    {/* QUOTE INFO */}
+    <div>
+      <p><b>Quote No:</b> __________</p>
+      <p><b>Date:</b> __________</p>
+      <p><b>Salesperson:</b> __________</p>
+    </div>
+
+  </div>
+
+  {/* CLIENT */}
+  <div style={{ marginTop: 20 }}>
+    <p><b>Client Name:</b> __________________________</p>
+    <p><b>Contact:</b> __________________________</p>
+    <p><b>Address:</b> __________________________</p>
+  </div>
+
+  {/* TABLE */}
+  <table border={1} cellPadding={6} style={{ width: "100%", marginTop: 20, borderCollapse: "collapse" }}>
+    <thead>
+      <tr>
+        <th>Area</th>
+        <th>Type</th>
+        <th>Width (m)</th>
+        <th>Drop (m)</th>
+        <th>Fabric</th>
+        <th>Colour</th>
+        <th>Control</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {computed.map(i => (
+        <tr key={i.id}>
+          <td>{i.area}</td>
+          <td>{i.type}</td>
+          <td>{i.width}</td>
+          <td>{i.drop}</td>
+          <td>{i.fabric}</td>
+          <td>{i.colour}</td>
+          <td>{i.control}</td>
+          <td>{i.total ? currency(i.total) : "-"}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  {/* TOTALS */}
+  <div style={{ marginTop: 20, textAlign: "right" }}>
+    <p><b>Subtotal:</b> {currency(subtotal)}</p>
+    <p><b>VAT:</b> {currency(vat)}</p>
+    <h3>Total: {currency(grandTotal)}</h3>
+  </div>
+
+  {/* NOTES */}
+  <div style={{ marginTop: 20 }}>
+    <p><b>Notes:</b></p>
+    <p>All quotations are valid for 7 days. Lead time 10–12 working days.</p>
+  </div>
+
+</div>
     </div>
   );
 }
