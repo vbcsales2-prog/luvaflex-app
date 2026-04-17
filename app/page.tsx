@@ -528,23 +528,68 @@ export default function Page() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: 20, textAlign: "right" }}>
-          <p>
-            <b>Subtotal:</b> {currency(subtotal)}
-          </p>
-          <p>
-            <b>VAT:</b> {currency(vat)}
-          </p>
-          <h3>Total: {currency(grandTotal)}</h3>
-        </div>
+        <div style={{ marginTop: 30, display: "flex", gap: 20 }}>
 
-        <div style={{ marginTop: 20 }}>
-          <p>
-            <b>Notes:</b>
-          </p>
-          <p>All quotations are valid for 7 days. Lead time 10–12 working days.</p>
-        </div>
-      </div>
+  {/* CUSTOMER CONFIRMATION */}
+  <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
+    <p><b>CUSTOMER CONFIRMATION</b></p>
+    <p>Name: __________________________</p>
+    <p>Date: __________________________</p>
+    <p>Signature: _____________________</p>
+  </div>
+
+  {/* NOTES */}
+  <div style={{ flex: 2, border: "1px solid #000", padding: 10 }}>
+    <p><b>PLEASE NOTE THE FOLLOWING:</b></p>
+
+    <p style={{ fontSize: 13 }}>
+      All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
+    </p>
+
+    <p style={{ fontSize: 13 }}>
+      We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.
+    </p>
+
+    <p style={{ fontSize: 13 }}>
+      All awnings and outdoor blinds installed are not guaranteed against storm damage.
+    </p>
+
+    <p style={{ fontSize: 13 }}>
+      For security measures all cash payments to be made instore.
+    </p>
+  </div>
+
+  {/* VALIDITY + TOTALS */}
+  <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
+
+    <p style={{ textAlign: "center" }}>
+      <b>QUOTE VALID FOR 7 DAYS</b>
+    </p>
+
+    <div style={{ marginTop: 20 }}>
+      <p style={{ display: "flex", justifyContent: "space-between" }}>
+        <span>Subtotal:</span>
+        <span>{currency(subtotal)}</span>
+      </p>
+
+      <p style={{ display: "flex", justifyContent: "space-between" }}>
+        <span>VAT:</span>
+        <span>{currency(vat)}</span>
+      </p>
+
+      <p style={{
+        display: "flex",
+        justifyContent: "space-between",
+        fontWeight: "bold",
+        marginTop: 10
+      }}>
+        <span>Total:</span>
+        <span>{currency(grandTotal)}</span>
+      </p>
     </div>
+
+  </div>
+
+</div>
   );
 }
