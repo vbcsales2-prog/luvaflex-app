@@ -753,17 +753,26 @@ export default function Page() {
                 <span>{currency(vat)}</span>
               </p>
 
-              <p
+              <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontWeight: "bold",
-                  margin: 0,
+                  marginTop: 10,
+                  borderTop: "2px solid #000",
+                  paddingTop: 10,
                 }}
               >
-                <span>Total:</span>
-                <span>{currency(grandTotal)}</span>
-              </p>
+                <p
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    margin: 0,
+                  }}
+                >
+                  <span>TOTAL:</span>
+                  <span>{currency(grandTotal)}</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
