@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 
 type BlindType =
+  | ""
   | "Outdoor"
   | "Venetian"
   | "Vertical"
@@ -42,6 +43,7 @@ type ComputedItem = Item & {
 };
 
 const TYPES: BlindType[] = [
+  "",
   "Outdoor",
   "Venetian",
   "Vertical",
@@ -140,6 +142,7 @@ function getControlOptions(type: BlindType): string[] {
       "RHC/CENTRE",
     ];
   }
+  if (type === "") return [];
   return ["RHC", "LHC"];
 }
 
@@ -147,21 +150,6 @@ function getSlatMode(type: BlindType): "venetian" | "vertical" | "na" {
   if (type === "Venetian") return "venetian";
   if (verticalFamily.includes(type)) return "vertical";
   return "na";
-}
-
-function defaultSlat(type: BlindType): string {
-  const mode = getSlatMode(type);
-  if (mode === "venetian") return "25mm";
-  if (mode === "vertical") return "90mm";
-  return "";
-}
-
-function defaultFabric(type: BlindType): string {
-  return type === "Outdoor" ? "Sheerweave" : "";
-}
-
-function defaultRemarks(type: BlindType): string {
-  return type === "Outdoor" ? "With Window" : "";
 }
 
 function displayValue(value: string | number | "" | undefined): string {
@@ -182,15 +170,15 @@ export default function Page() {
     {
       id: "1",
       area: "",
-      type: "Outdoor",
+      type: "",
       width: "",
       drop: "",
-      fabric: "Sheerweave",
+      fabric: "",
       colour: "",
       slat: "",
-      fixture: "Rec",
-      control: "RHC",
-      remarks: "With Window",
+      fixture: "",
+      control: "",
+      remarks: "",
     },
   ]);
 
@@ -204,15 +192,15 @@ export default function Page() {
       {
         id: Date.now().toString(),
         area: "",
-        type: "Outdoor",
+        type: "",
         width: "",
         drop: "",
-        fabric: "Sheerweave",
+        fabric: "",
         colour: "",
         slat: "",
-        fixture: "Rec",
-        control: "RHC",
-        remarks: "With Window",
+        fixture: "",
+        control: "",
+        remarks: "",
       },
     ]);
   };
@@ -242,7 +230,7 @@ export default function Page() {
             price = base + addon;
           }
         }
-      } else {
+      } else if (item.type !== "") {
         manual = true;
         if (typeof item.manualPrice === "number" && !Number.isNaN(item.manualPrice)) {
           price = item.manualPrice;
@@ -256,757 +244,810 @@ export default function Page() {
   const subtotal = computed.reduce((sum, item) => sum + item.price, 0);
   const vat = subtotal * VAT_RATE;
   const grandTotal = subtotal + vat;
-
   const referenceValue = quoteMeta.quoteNo || "0";
 
   return (
     <div style={{ padding: 8, fontFamily: "Arial", background: "#fff", color: "#000" }}>
-      <h1 style={{ margin: "0 0 10px 0", fontSize: 18 }}>Luvaflex Quote App</h1>
+      <style>{`
+        @media print {
+          @page {
+            size: A4 landscape;
+            margin: 6mm;
+          }
 
-      <table
-        border={1}
-        cellPadding={6}
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          fontSize: 12,
-          border: "2px solid #000",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>Area</th>
-            <th>Width</th>
-            <th>Drop</th>
-            <th>Type</th>
-            <th>Fabric</th>
-            <th>Colour</th>
-            <th>Slat Width</th>
-            <th>Fixture</th>
-            <th>Control</th>
-            <th>Remarks</th>
-            <th>Price</th>
-          </tr>
-        </thead>
+          body {
+            margin: 0 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
 
-        <tbody>
-          {computed.map((item) => (
-            <tr key={item.id}>
-              <td>
-                <input
-                  value={item.area}
-                  onChange={(e) => update(item.id, "area", e.target.value)}
-                  style={{ width: "100%" }}
-                />
-              </td>
+          .no-print {
+            display: none !important;
+          }
 
-              <td>
-                <input
-                  type="number"
-                  step="0.001"
-                  value={item.width}
-                  onChange={(e) =>
-                    update(item.id, "width", e.target.value === "" ? "" : Number(e.target.value))
-                  }
-                  style={{ width: "100%" }}
-                />
-              </td>
+          .print-only-quote {
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
 
-              <td>
-                <input
-                  type="number"
-                  step="0.001"
-                  value={item.drop}
-                  onChange={(e) =>
-                    update(item.id, "drop", e.target.value === "" ? "" : Number(e.target.value))
-                  }
-                  style={{ width: "100%" }}
-                />
-              </td>
+          .print-root {
+            padding: 0 !important;
+            margin: 0 !important;
+          }
 
-              <td>
-                <select
-                  value={item.type}
-                  onChange={(e) => {
-                    const newType = e.target.value as BlindType;
-                    const controls = getControlOptions(newType);
-                    update(item.id, "type", newType);
-                    update(item.id, "control", controls[0]);
-                    update(item.id, "fabric", defaultFabric(newType));
-                    update(item.id, "remarks", defaultRemarks(newType));
-                    update(item.id, "slat", defaultSlat(newType));
-                    update(item.id, "manualPrice", undefined);
-                    update(item.id, "editingPrice", false);
-                  }}
-                  style={{ width: "100%" }}
-                >
-                  {TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </td>
+          .print-scale {
+            transform: scale(0.92);
+            transform-origin: top left;
+            width: 108.7%;
+          }
+        }
+      `}</style>
 
-              <td>
-                {item.type === "Outdoor" ? (
-                  <select
-                    value={item.fabric}
-                    onChange={(e) => update(item.id, "fabric", e.target.value)}
-                    style={{ width: "100%" }}
-                  >
-                    <option value="Sheerweave">Sheerweave</option>
-                    <option value="PVC">PVC</option>
-                    <option value="Ribtext">Ribtext</option>
-                  </select>
-                ) : (
-                  <input
-                    value={item.fabric}
-                    onChange={(e) => update(item.id, "fabric", e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                )}
-              </td>
+      <div className="print-root">
+        <div className="no-print">
+          <h1 style={{ margin: "0 0 10px 0", fontSize: 18 }}>Luvaflex Quote App</h1>
 
-              <td>
-                <input
-                  value={item.colour}
-                  onChange={(e) => update(item.id, "colour", e.target.value)}
-                  style={{ width: "100%" }}
-                />
-              </td>
+          <table
+            border={1}
+            cellPadding={6}
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: 12,
+              border: "2px solid #000",
+            }}
+          >
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Width</th>
+                <th>Drop</th>
+                <th>Type</th>
+                <th>Fabric</th>
+                <th>Colour</th>
+                <th>Slat Width</th>
+                <th>Fixture</th>
+                <th>Control</th>
+                <th>Remarks</th>
+                <th>Price</th>
+              </tr>
+            </thead>
 
-              <td>
-                {getSlatMode(item.type) === "venetian" ? (
-                  <select
-                    value={item.slat || "25mm"}
-                    onChange={(e) => update(item.id, "slat", e.target.value)}
-                    style={{ width: "100%" }}
-                  >
-                    <option value="25mm">25mm</option>
-                    <option value="50mm">50mm</option>
-                  </select>
-                ) : getSlatMode(item.type) === "vertical" ? (
-                  <select
-                    value={item.slat || "90mm"}
-                    onChange={(e) => update(item.id, "slat", e.target.value)}
-                    style={{ width: "100%" }}
-                  >
-                    <option value="90mm">90mm</option>
-                    <option value="127mm">127mm</option>
-                    <option value="250mm">250mm</option>
-                  </select>
-                ) : (
-                  <span>N/A</span>
-                )}
-              </td>
-
-              <td>
-                <select
-                  value={item.fixture}
-                  onChange={(e) => update(item.id, "fixture", e.target.value)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="Rec">Rec</option>
-                  <option value="F/F">F/F</option>
-                  <option value="Custom">Custom</option>
-                </select>
-              </td>
-
-              <td>
-                <select
-                  value={item.control}
-                  onChange={(e) => update(item.id, "control", e.target.value)}
-                  style={{ width: "100%" }}
-                >
-                  {getControlOptions(item.type).map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </td>
-
-              <td>
-                {item.type === "Outdoor" ? (
-                  <select
-                    value={item.remarks}
-                    onChange={(e) => update(item.id, "remarks", e.target.value)}
-                    style={{ width: "100%" }}
-                  >
-                    <option value="With Window">With Window</option>
-                    <option value="Without Window">Without Window</option>
-                  </select>
-                ) : (
-                  <input
-                    value={item.remarks}
-                    onChange={(e) => update(item.id, "remarks", e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                )}
-              </td>
-
-              <td style={{ textAlign: "right", minWidth: 95 }}>
-                {item.manual ? (
-                  item.editingPrice ? (
+            <tbody>
+              {computed.map((item) => (
+                <tr key={item.id}>
+                  <td>
                     <input
-                      type="number"
-                      defaultValue={item.manualPrice ?? ""}
-                      onBlur={(e) => {
-                        update(item.id, "manualPrice", Number(e.target.value) || 0);
-                        update(item.id, "editingPrice", false);
-                      }}
-                      autoFocus
+                      value={item.area}
+                      onChange={(e) => update(item.id, "area", e.target.value)}
                       style={{ width: "100%" }}
                     />
-                  ) : (
-                    <span
-                      style={{ cursor: "pointer", color: "blue" }}
-                      onClick={() => update(item.id, "editingPrice", true)}
-                    >
-                      {item.manualPrice ? currency(item.manualPrice) : "Manual Entry"}
-                    </span>
-                  )
-                ) : item.pending ? (
-                  "-"
-                ) : item.custom ? (
-                  <span style={{ color: "red", fontWeight: 600 }}>Custom Quote</span>
-                ) : (
-                  currency(item.price)
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  </td>
 
-      <button onClick={addItem} style={{ marginTop: 8 }}>
-        Add Item
-      </button>
+                  <td>
+                    <input
+                      type="number"
+                      step="0.001"
+                      value={item.width}
+                      onChange={(e) =>
+                        update(item.id, "width", e.target.value === "" ? "" : Number(e.target.value))
+                      }
+                      style={{ width: "100%" }}
+                    />
+                  </td>
 
-      <div style={{ marginTop: 12 }}>
-        <p style={{ margin: "0 0 6px 0" }}>Subtotal: {currency(subtotal)}</p>
-        <p style={{ margin: "0 0 8px 0" }}>VAT: {currency(vat)}</p>
-        <h2 style={{ margin: 0, fontSize: 20 }}>Total: {currency(grandTotal)}</h2>
-      </div>
+                  <td>
+                    <input
+                      type="number"
+                      step="0.001"
+                      value={item.drop}
+                      onChange={(e) =>
+                        update(item.id, "drop", e.target.value === "" ? "" : Number(e.target.value))
+                      }
+                      style={{ width: "100%" }}
+                    />
+                  </td>
 
-      <div
-        style={{
-          marginTop: 24,
-          padding: 6,
-          border: "2px solid #000",
-          background: "#fff",
-        }}
-      >
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            border: "2px solid #000",
-            marginBottom: 8,
-            tableLayout: "fixed",
-          }}
-        >
-          <tbody>
-            <tr>
-              <td
-                style={{
-                  width: "38%",
-                  borderRight: "2px solid #000",
-                  padding: "4px 6px",
-                  verticalAlign: "top",
-                }}
-              >
-                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                  <img
-                    src="/logo.png"
-                    alt="Venetian Blind Centre"
-                    style={{
-                      width: "100%",
-                      maxWidth: 500,
-                      height: "auto",
-                      display: "block",
-                      marginBottom: 6,
-                    }}
-                  />
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      gap: 10,
-                    }}
-                  >
-                    <div
-                      style={{
-                        marginTop: 2,
-                        fontSize: 12,
-                        lineHeight: "15px",
-                        textAlign: "left",
-                        flex: 1,
+                  <td>
+                    <select
+                      value={item.type}
+                      onChange={(e) => {
+                        const newType = e.target.value as BlindType;
+                        update(item.id, "type", newType);
+                        update(item.id, "fabric", "");
+                        update(item.id, "slat", "");
+                        update(item.id, "fixture", "");
+                        update(item.id, "control", "");
+                        update(item.id, "remarks", "");
+                        update(item.id, "manualPrice", undefined);
+                        update(item.id, "editingPrice", false);
                       }}
+                      style={{ width: "100%" }}
                     >
-                      <div>442 Greyling Street</div>
-                      <div>Pietermaritzburg</div>
-                      <div>Tel: 033 394 1941</div>
-                      <div>E-mail: info@venetian.co.za</div>
-                      <div>www.venetian.co.za</div>
-                      <div>VAT Reg. No: 4390246884</div>
-                    </div>
+                      <option value=""></option>
+                      {TYPES.filter(Boolean).map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
 
-                    <div
-                      style={{
-                        width: 150,
-                        border: "1px solid #000",
-                        padding: "8px 6px",
-                        fontSize: 10.5,
-                        lineHeight: "15px",
-                        textAlign: "center",
-                        marginTop: 22,
-                        marginRight: 8,
-                      }}
-                    >
-                      <div><b>MONDAY TO FRIDAY - 7:30am TO 4:30pm</b></div>
-                      <div style={{ marginTop: 2 }}><b>CLOSED FRIDAYS BETWEEN</b></div>
-                      <div><b>11:30 & 2pm</b></div>
-                      <div style={{ marginTop: 2 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-
-              <td
-                style={{
-                  width: "42%",
-                  borderRight: "2px solid #000",
-                  verticalAlign: "top",
-                  padding: 0,
-                }}
-              >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                  <tbody>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <b>INVOICE TO / NAME:</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <b>ADDRESS:</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px", height: 18 }} />
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <b>POSTAL ADDRESS:</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px", height: 18 }} />
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
-                          <span><b>TEL: (HOME)</b></span>
-                          <span style={{ textAlign: "center" }}><b>TEL: (WORK)</b></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
-                          <span><b>FAX:</b></span>
-                          <span style={{ textAlign: "center" }}><b>CELL:</b></span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <b>E-MAIL:</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: "2px 5px" }}>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
-                          <span><b>CUSTOMER VAT NO:</b></span>
-                          <span style={{ textAlign: "center" }}><b>O/NO:</b></span>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-
-              <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                  <tbody>
-                    <tr>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #000",
-                          padding: "4px",
-                          textAlign: "center",
-                          fontWeight: 700,
-                        }}
+                  <td>
+                    {item.type === "Outdoor" ? (
+                      <select
+                        value={item.fabric}
+                        onChange={(e) => update(item.id, "fabric", e.target.value)}
+                        style={{ width: "100%" }}
                       >
-                        QUOTATION
-                      </td>
-                    </tr>
+                        <option value=""></option>
+                        <option value="Sheerweave">Sheerweave</option>
+                        <option value="PVC">PVC</option>
+                        <option value="Ribtext">Ribtext</option>
+                      </select>
+                    ) : (
+                      <input
+                        value={item.fabric}
+                        onChange={(e) => update(item.id, "fabric", e.target.value)}
+                        style={{ width: "100%" }}
+                      />
+                    )}
+                  </td>
 
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        Quote No:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                  <td>
+                    <input
+                      value={item.colour}
+                      onChange={(e) => update(item.id, "colour", e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </td>
+
+                  <td>
+                    {getSlatMode(item.type) === "venetian" ? (
+                      <select
+                        value={item.slat}
+                        onChange={(e) => update(item.id, "slat", e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        <option value="25mm">25mm</option>
+                        <option value="50mm">50mm</option>
+                      </select>
+                    ) : getSlatMode(item.type) === "vertical" ? (
+                      <select
+                        value={item.slat}
+                        onChange={(e) => update(item.id, "slat", e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        <option value="90mm">90mm</option>
+                        <option value="127mm">127mm</option>
+                        <option value="250mm">250mm</option>
+                      </select>
+                    ) : (
+                      <input
+                        value={item.slat}
+                        onChange={(e) => update(item.id, "slat", e.target.value)}
+                        style={{ width: "100%" }}
+                      />
+                    )}
+                  </td>
+
+                  <td>
+                    <select
+                      value={item.fixture}
+                      onChange={(e) => update(item.id, "fixture", e.target.value)}
+                      style={{ width: "100%" }}
+                    >
+                      <option value=""></option>
+                      <option value="Rec">Rec</option>
+                      <option value="F/F">F/F</option>
+                      <option value="Custom">Custom</option>
+                    </select>
+                  </td>
+
+                  <td>
+                    {item.type === "" ? (
+                      <input
+                        value={item.control}
+                        onChange={(e) => update(item.id, "control", e.target.value)}
+                        style={{ width: "100%" }}
+                      />
+                    ) : (
+                      <select
+                        value={item.control}
+                        onChange={(e) => update(item.id, "control", e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        {getControlOptions(item.type).map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </td>
+
+                  <td>
+                    {item.type === "Outdoor" ? (
+                      <select
+                        value={item.remarks}
+                        onChange={(e) => update(item.id, "remarks", e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        <option value="With Window">With Window</option>
+                        <option value="Without Window">Without Window</option>
+                      </select>
+                    ) : (
+                      <input
+                        value={item.remarks}
+                        onChange={(e) => update(item.id, "remarks", e.target.value)}
+                        style={{ width: "100%" }}
+                      />
+                    )}
+                  </td>
+
+                  <td style={{ textAlign: "right", minWidth: 95 }}>
+                    {item.manual ? (
+                      item.editingPrice ? (
                         <input
-                          value={quoteMeta.quoteNo}
-                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, quoteNo: e.target.value }))}
-                          style={{
-                            width: "88%",
-                            border: "none",
-                            outline: "none",
-                            textAlign: "center",
-                            fontSize: 12,
-                            color: "#c00000",
-                            background: "transparent",
+                          type="number"
+                          defaultValue={item.manualPrice ?? ""}
+                          onBlur={(e) => {
+                            update(item.id, "manualPrice", Number(e.target.value) || 0);
+                            update(item.id, "editingPrice", false);
                           }}
+                          autoFocus
+                          style={{ width: "100%" }}
                         />
-                      </td>
-                    </tr>
+                      ) : (
+                        <span
+                          style={{ cursor: "pointer", color: "blue" }}
+                          onClick={() => update(item.id, "editingPrice", true)}
+                        >
+                          {item.manualPrice ? currency(item.manualPrice) : "-"}
+                        </span>
+                      )
+                    ) : item.pending ? (
+                      "-"
+                    ) : item.custom ? (
+                      <span style={{ color: "red", fontWeight: 600 }}>Custom Quote</span>
+                    ) : item.price ? (
+                      currency(item.price)
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        SALESPERSON:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        <input
-                          value={quoteMeta.salesperson}
-                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, salesperson: e.target.value }))}
-                          style={{
-                            width: "88%",
-                            border: "none",
-                            outline: "none",
-                            textAlign: "center",
-                            fontSize: 12,
-                            background: "transparent",
-                          }}
-                        />
-                      </td>
-                    </tr>
+          <button onClick={addItem} style={{ marginTop: 8 }}>
+            Add Item
+          </button>
 
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        DATE:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        <input
-                          value={quoteMeta.date}
-                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, date: e.target.value }))}
-                          style={{
-                            width: "88%",
-                            border: "none",
-                            outline: "none",
-                            textAlign: "center",
-                            fontSize: 12,
-                            background: "transparent",
-                          }}
-                        />
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        CONTACT PERSON:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        <input
-                          value={quoteMeta.contactPerson}
-                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, contactPerson: e.target.value }))}
-                          style={{
-                            width: "88%",
-                            border: "none",
-                            outline: "none",
-                            textAlign: "center",
-                            fontSize: 12,
-                            background: "transparent",
-                          }}
-                        />
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
-                        INTERNAL ORDER No:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: "3px 4px", textAlign: "center" }}>
-                        <input
-                          value={quoteMeta.internalOrderNo}
-                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, internalOrderNo: e.target.value }))}
-                          style={{
-                            width: "88%",
-                            border: "none",
-                            outline: "none",
-                            textAlign: "center",
-                            fontSize: 12,
-                            background: "transparent",
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table
-          border={1}
-          cellPadding={6}
-          style={{
-            width: "100%",
-            marginTop: 2,
-            borderCollapse: "collapse",
-            fontSize: 12,
-            border: "2px solid #000",
-          }}
-        >
-          <thead>
-            <tr>
-              <th style={{ textAlign: "center" }}>LOCATION</th>
-              <th style={{ textAlign: "center" }}>WIDTH mm</th>
-              <th style={{ textAlign: "center" }}>DROP mm</th>
-              <th style={{ textAlign: "center" }}>TYPE OF BLIND</th>
-              <th style={{ textAlign: "center" }}>FABRIC</th>
-              <th style={{ textAlign: "center" }}>COLOUR</th>
-              <th style={{ textAlign: "center" }}>SLAT WIDTH</th>
-              <th style={{ textAlign: "center" }}>FIXTURE</th>
-              <th style={{ textAlign: "center" }}>CONT/STACK</th>
-              <th style={{ textAlign: "center" }}>CONT/LENGTH</th>
-              <th style={{ textAlign: "center" }}>REMARKS</th>
-              <th style={{ textAlign: "right" }}>PRICE</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {computed.map((item) => (
-              <tr key={item.id}>
-                <td>{displayValue(item.area)}</td>
-                <td>{displayValue(item.width)}</td>
-                <td>{displayValue(item.drop)}</td>
-                <td>{displayValue(item.type)}</td>
-                <td>{displayValue(item.fabric)}</td>
-                <td>{displayValue(item.colour)}</td>
-                <td>{getSlatMode(item.type) === "na" ? "N/A" : displayValue(item.slat)}</td>
-                <td>{displayValue(item.fixture)}</td>
-                <td>{displayValue(item.control)}</td>
-                <td>{displayValue(item.control)}</td>
-                <td>{displayValue(item.remarks)}</td>
-                <td style={{ textAlign: "right", fontWeight: 600 }}>
-                  {item.pending ? "-" : item.custom ? "-" : item.price ? `R ${currency(item.price)}` : "-"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginTop: 8,
-            border: "2px solid #000",
-            tableLayout: "fixed",
-          }}
-        >
-          <tbody>
-            <tr>
-              <td style={{ width: "12%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
-                SUPPLY ONLY
-              </td>
-              <td style={{ width: "14%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
-                SUPPLY AND INSTALL
-              </td>
-              <td style={{ width: "13%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
-                DELIVERY PERIOD
-              </td>
-              <td style={{ width: "6%", borderRight: "1px solid #000", padding: "4px 6px" }} />
-              <td style={{ padding: "4px 6px", fontWeight: 700 }}>
-                WORKING DAYS FROM CONFIRMATION
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div
-          style={{
-            borderLeft: "2px solid #000",
-            borderRight: "2px solid #000",
-            borderBottom: "2px solid #000",
-            color: "red",
-            textAlign: "center",
-            fontWeight: 700,
-            padding: "6px 8px",
-            fontSize: 12,
-          }}
-        >
-          PRICES QUOTED ARE SUBJECT TO VARIATION SHOULD THE ABOVE DIFFER IN PRODUCT, DESIGN OR SIZE
+          <div style={{ marginTop: 12 }}>
+            <p style={{ margin: "0 0 6px 0" }}>Subtotal: {currency(subtotal)}</p>
+            <p style={{ margin: "0 0 8px 0" }}>VAT: {currency(vat)}</p>
+            <h2 style={{ margin: 0, fontSize: 20 }}>Total: {currency(grandTotal)}</h2>
+          </div>
         </div>
 
-        <div style={{ display: "flex", gap: 0 }}>
+        <div className="print-only-quote print-scale" style={{ marginTop: 24 }}>
           <div
             style={{
-              flex: 1.05,
-              borderLeft: "2px solid #000",
-              borderRight: "1px solid #000",
-              borderBottom: "2px solid #000",
+              padding: 6,
+              border: "2px solid #000",
               background: "#fff",
             }}
           >
-            <div style={{ padding: "4px 8px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center" }}>
-              FIRST NATIONAL BANK
-            </div>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                border: "2px solid #000",
+                marginBottom: 8,
+                tableLayout: "fixed",
+              }}
+            >
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      width: "38%",
+                      borderRight: "2px solid #000",
+                      padding: "4px 6px",
+                      verticalAlign: "top",
+                    }}
+                  >
+                    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                      <img
+                        src="/logo.png"
+                        alt="Venetian Blind Centre"
+                        style={{
+                          width: "100%",
+                          maxWidth: 500,
+                          height: "auto",
+                          display: "block",
+                          marginBottom: 6,
+                        }}
+                      />
 
-            <div style={{ padding: "4px 8px", textAlign: "center", lineHeight: "20px" }}>
-              <div><b>Branch:</b> 221325</div>
-              <div><b>Acc:</b> 62180140156</div>
-              <div><b>Name:</b> Venetian Blind Centre</div>
-              <div>
-                <b>REFERENCE:</b>{" "}
-                <span style={{ color: "#c00000" }}>{referenceValue}</span>
-              </div>
-            </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          justifyContent: "space-between",
+                          gap: 10,
+                        }}
+                      >
+                        <div
+                          style={{
+                            marginTop: 2,
+                            fontSize: 12,
+                            lineHeight: "15px",
+                            textAlign: "left",
+                            flex: 1,
+                          }}
+                        >
+                          <div>442 Greyling Street</div>
+                          <div>Pietermaritzburg</div>
+                          <div>Tel: 033 394 1941</div>
+                          <div>E-mail: info@venetian.co.za</div>
+                          <div>www.venetian.co.za</div>
+                          <div>VAT Reg. No: 4390246884</div>
+                        </div>
+
+                        <div
+                          style={{
+                            width: 150,
+                            border: "1px solid #000",
+                            padding: "8px 6px",
+                            fontSize: 10.5,
+                            lineHeight: "15px",
+                            textAlign: "center",
+                            marginTop: 22,
+                            marginRight: 8,
+                          }}
+                        >
+                          <div><b>MONDAY TO FRIDAY - 7:30am TO 4:30pm</b></div>
+                          <div style={{ marginTop: 2 }}><b>CLOSED FRIDAYS BETWEEN</b></div>
+                          <div><b>11:30 & 2pm</b></div>
+                          <div style={{ marginTop: 2 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td
+                    style={{
+                      width: "42%",
+                      borderRight: "2px solid #000",
+                      verticalAlign: "top",
+                      padding: 0,
+                    }}
+                  >
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                      <tbody>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
+                            <b>INVOICE TO / NAME:</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
+                            <b>ADDRESS:</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px", height: 18 }} />
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
+                            <b>POSTAL ADDRESS:</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px", height: 18 }} />
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
+                              <span><b>TEL: (HOME)</b></span>
+                              <span style={{ textAlign: "center" }}><b>TEL: (WORK)</b></span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
+                              <span><b>FAX:</b></span>
+                              <span style={{ textAlign: "center" }}><b>CELL:</b></span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
+                            <b>E-MAIL:</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ padding: "2px 5px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
+                              <span><b>CUSTOMER VAT NO:</b></span>
+                              <span style={{ textAlign: "center" }}><b>O/NO:</b></span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+
+                  <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                      <tbody>
+                        <tr>
+                          <td
+                            style={{
+                              borderBottom: "1px solid #000",
+                              padding: "4px",
+                              textAlign: "center",
+                              fontWeight: 700,
+                            }}
+                          >
+                            QUOTATION
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            Quote No:
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            {quoteMeta.quoteNo || ""}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            SALESPERSON:
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            {quoteMeta.salesperson || ""}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            DATE:
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            {quoteMeta.date || ""}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            CONTACT PERSON:
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            {quoteMeta.contactPerson || ""}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                            INTERNAL ORDER No:
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ padding: "3px 4px", textAlign: "center" }}>
+                            {quoteMeta.internalOrderNo || ""}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table
+              border={1}
+              cellPadding={6}
+              style={{
+                width: "100%",
+                marginTop: 2,
+                borderCollapse: "collapse",
+                fontSize: 12,
+                border: "2px solid #000",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "center" }}>LOCATION</th>
+                  <th style={{ textAlign: "center" }}>WIDTH mm</th>
+                  <th style={{ textAlign: "center" }}>DROP mm</th>
+                  <th style={{ textAlign: "center" }}>TYPE OF BLIND</th>
+                  <th style={{ textAlign: "center" }}>FABRIC</th>
+                  <th style={{ textAlign: "center" }}>COLOUR</th>
+                  <th style={{ textAlign: "center" }}>SLAT WIDTH</th>
+                  <th style={{ textAlign: "center" }}>FIXTURE</th>
+                  <th style={{ textAlign: "center" }}>CONT/STACK</th>
+                  <th style={{ textAlign: "center" }}>CONT/LENGTH</th>
+                  <th style={{ textAlign: "center" }}>REMARKS</th>
+                  <th style={{ textAlign: "right" }}>PRICE</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {computed.map((item) => (
+                  <tr key={item.id}>
+                    <td>{displayValue(item.area)}</td>
+                    <td>{displayValue(item.width)}</td>
+                    <td>{displayValue(item.drop)}</td>
+                    <td>{displayValue(item.type)}</td>
+                    <td>{displayValue(item.fabric)}</td>
+                    <td>{displayValue(item.colour)}</td>
+                    <td>{displayValue(item.slat)}</td>
+                    <td>{displayValue(item.fixture)}</td>
+                    <td>{displayValue(item.control)}</td>
+                    <td>{displayValue(item.control)}</td>
+                    <td>{displayValue(item.remarks)}</td>
+                    <td style={{ textAlign: "right", fontWeight: 600 }}>
+                      {item.pending ? "-" : item.custom ? "-" : item.price ? `R ${currency(item.price)}` : "-"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                marginTop: 8,
+                border: "2px solid #000",
+                tableLayout: "fixed",
+              }}
+            >
+              <tbody>
+                <tr>
+                  <td style={{ width: "12%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
+                    SUPPLY ONLY
+                  </td>
+                  <td style={{ width: "14%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
+                    SUPPLY AND INSTALL
+                  </td>
+                  <td style={{ width: "13%", borderRight: "1px solid #000", padding: "4px 6px", fontWeight: 700 }}>
+                    DELIVERY PERIOD
+                  </td>
+                  <td style={{ width: "6%", borderRight: "1px solid #000", padding: "4px 6px" }} />
+                  <td style={{ padding: "4px 6px", fontWeight: 700 }}>
+                    WORKING DAYS FROM CONFIRMATION
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
             <div
               style={{
-                background: "#000",
-                color: "#fff",
+                borderLeft: "2px solid #000",
+                borderRight: "2px solid #000",
+                borderBottom: "2px solid #000",
+                color: "red",
                 textAlign: "center",
-                padding: "8px 6px",
-                marginTop: 4,
-                lineHeight: "18px",
+                fontWeight: 700,
+                padding: "6px 8px",
                 fontSize: 12,
               }}
             >
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>PAYMENT TERMS</div>
-              <div>AN 80% DEPOSIT ON CONFIRMATION.</div>
-              <div>BALANCE TO BE SETTLED IN FULL BEFORE</div>
-              <div>INSTALLATION OR COLLECTION</div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              flex: 1.15,
-              borderRight: "1px solid #000",
-              borderBottom: "2px solid #000",
-              padding: 8,
-            }}
-          >
-            <p style={{ margin: "0 0 8px 0", fontWeight: 700 }}>CUSTOMER CONFIRMATION</p>
-            <p style={{ margin: "0 0 10px 0" }}>NAME: __________________________</p>
-            <p style={{ margin: "0 0 10px 0" }}>DATE: __________________________</p>
-            <p style={{ margin: 0 }}>SIGNATURE: _____________________</p>
-          </div>
-
-          <div
-            style={{
-              flex: 2.4,
-              borderRight: "1px solid #000",
-              borderBottom: "2px solid #000",
-              padding: 8,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-              <p style={{ margin: 0, fontWeight: 700 }}>PLEASE NOTE THE FOLLOWING:-</p>
-              <p style={{ margin: 0, fontWeight: 700 }}>QUOTE VALID FOR 7 DAYS</p>
+              PRICES QUOTED ARE SUBJECT TO VARIATION SHOULD THE ABOVE DIFFER IN PRODUCT, DESIGN OR SIZE
             </div>
 
-            <div style={{ marginTop: 8, fontSize: 11.5, lineHeight: "17px" }}>
-              <p style={{ margin: "0 0 6px 0" }}>
-                All wood and bamboo blinds will be subject to imperfections, warpage & colour variations
-                inherent in natural wood.
-              </p>
+            <div style={{ display: "flex", gap: 0 }}>
+              <div
+                style={{
+                  flex: 1.05,
+                  borderLeft: "2px solid #000",
+                  borderRight: "1px solid #000",
+                  borderBottom: "2px solid #000",
+                  background: "#fff",
+                }}
+              >
+                <div style={{ padding: "4px 8px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center" }}>
+                  FIRST NATIONAL BANK
+                </div>
 
-              <p style={{ margin: "0 0 6px 0" }}>
-                We are not responsible for any damage whilst drilling through wall, brick, tile, granite &
-                marble during installation.
-              </p>
+                <div style={{ padding: "4px 8px", textAlign: "center", lineHeight: "20px" }}>
+                  <div><b>Branch:</b> 221325</div>
+                  <div><b>Acc:</b> 62180140156</div>
+                  <div><b>Name:</b> Venetian Blind Centre</div>
+                  <div>
+                    <b>REFERENCE:</b>{" "}
+                    <span style={{ color: "#c00000" }}>{referenceValue}</span>
+                  </div>
+                </div>
 
-              <p style={{ margin: "0 0 6px 0" }}>
-                All awnings and outdoor blinds installed are not guaranteed against storm damage.
-              </p>
-
-              <p style={{ margin: 0 }}>
-                For security measures all cash payments to be made instore.
-              </p>
-            </div>
-          </div>
-
-          <div
-            style={{
-              flex: 0.95,
-              borderRight: "2px solid #000",
-              borderBottom: "2px solid #000",
-              padding: 8,
-            }}
-          >
-            <div style={{ marginTop: 4 }}>
-              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
-                <span>SUBTOTAL</span>
-                <span>R {currency(subtotal)}</span>
-              </p>
-
-              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
-                <span>DISCOUNT</span>
-                <span>R 0.00</span>
-              </p>
-
-              <div style={{ borderTop: "1px solid #000", margin: "8px 0" }} />
-
-              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0", fontWeight: 700 }}>
-                <span>SUBTOTAL</span>
-                <span>R {currency(subtotal)}</span>
-              </p>
-
-              <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
-                <span>VAT</span>
-                <span>R {currency(vat)}</span>
-              </p>
+                <div
+                  style={{
+                    background: "#000",
+                    color: "#fff",
+                    textAlign: "center",
+                    padding: "8px 6px",
+                    marginTop: 4,
+                    lineHeight: "18px",
+                    fontSize: 12,
+                  }}
+                >
+                  <div style={{ fontWeight: 700, marginBottom: 4 }}>PAYMENT TERMS</div>
+                  <div>AN 80% DEPOSIT ON CONFIRMATION.</div>
+                  <div>BALANCE TO BE SETTLED IN FULL BEFORE</div>
+                  <div>INSTALLATION OR COLLECTION</div>
+                </div>
+              </div>
 
               <div
                 style={{
-                  marginTop: 10,
-                  borderTop: "2px solid #000",
-                  paddingTop: 10,
+                  flex: 1.15,
+                  borderRight: "1px solid #000",
+                  borderBottom: "2px solid #000",
+                  padding: 8,
                 }}
               >
-                <p
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    margin: 0,
-                  }}
-                >
-                  <span>TOTAL</span>
-                  <span>R {currency(grandTotal)}</span>
-                </p>
+                <p style={{ margin: "0 0 8px 0", fontWeight: 700 }}>CUSTOMER CONFIRMATION</p>
+                <p style={{ margin: "0 0 10px 0" }}>NAME: __________________________</p>
+                <p style={{ margin: "0 0 10px 0" }}>DATE: __________________________</p>
+                <p style={{ margin: 0 }}>SIGNATURE: _____________________</p>
               </div>
+
+              <div
+                style={{
+                  flex: 2.4,
+                  borderRight: "1px solid #000",
+                  borderBottom: "2px solid #000",
+                  padding: 8,
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                  <p style={{ margin: 0, fontWeight: 700 }}>PLEASE NOTE THE FOLLOWING:-</p>
+                  <p style={{ margin: 0, fontWeight: 700 }}>QUOTE VALID FOR 7 DAYS</p>
+                </div>
+
+                <div style={{ marginTop: 8, fontSize: 11.5, lineHeight: "17px" }}>
+                  <p style={{ margin: "0 0 6px 0" }}>
+                    All wood and bamboo blinds will be subject to imperfections, warpage & colour variations
+                    inherent in natural wood.
+                  </p>
+
+                  <p style={{ margin: "0 0 6px 0" }}>
+                    We are not responsible for any damage whilst drilling through wall, brick, tile, granite &
+                    marble during installation.
+                  </p>
+
+                  <p style={{ margin: "0 0 6px 0" }}>
+                    All awnings and outdoor blinds installed are not guaranteed against storm damage.
+                  </p>
+
+                  <p style={{ margin: 0 }}>
+                    For security measures all cash payments to be made instore.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  flex: 0.95,
+                  borderRight: "2px solid #000",
+                  borderBottom: "2px solid #000",
+                  padding: 8,
+                }}
+              >
+                <div style={{ marginTop: 4 }}>
+                  <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
+                    <span>SUBTOTAL</span>
+                    <span>R {currency(subtotal)}</span>
+                  </p>
+
+                  <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
+                    <span>DISCOUNT</span>
+                    <span>R 0.00</span>
+                  </p>
+
+                  <div style={{ borderTop: "1px solid #000", margin: "8px 0" }} />
+
+                  <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0", fontWeight: 700 }}>
+                    <span>SUBTOTAL</span>
+                    <span>R {currency(subtotal)}</span>
+                  </p>
+
+                  <p style={{ display: "flex", justifyContent: "space-between", margin: "0 0 8px 0" }}>
+                    <span>VAT</span>
+                    <span>R {currency(vat)}</span>
+                  </p>
+
+                  <div
+                    style={{
+                      marginTop: 10,
+                      borderTop: "2px solid #000",
+                      paddingTop: 10,
+                    }}
+                  >
+                    <p
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        margin: 0,
+                      }}
+                    >
+                      <span>TOTAL</span>
+                      <span>R {currency(grandTotal)}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="no-print" style={{ marginTop: 12 }}>
+          <div
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              border: "2px solid #000",
+              padding: 8,
+            }}
+          >
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>QUOTATION DETAILS</div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 8, maxWidth: 500 }}>
+              <label>Quote No:</label>
+              <input
+                value={quoteMeta.quoteNo}
+                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, quoteNo: e.target.value }))}
+              />
+
+              <label>Salesperson:</label>
+              <input
+                value={quoteMeta.salesperson}
+                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, salesperson: e.target.value }))}
+              />
+
+              <label>Date:</label>
+              <input
+                value={quoteMeta.date}
+                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, date: e.target.value }))}
+              />
+
+              <label>Contact Person:</label>
+              <input
+                value={quoteMeta.contactPerson}
+                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, contactPerson: e.target.value }))}
+              />
+
+              <label>Internal Order No:</label>
+              <input
+                value={quoteMeta.internalOrderNo}
+                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, internalOrderNo: e.target.value }))}
+              />
             </div>
           </div>
         </div>
