@@ -170,6 +170,14 @@ function displayValue(value: string | number | "" | undefined): string {
 }
 
 export default function Page() {
+  const [quoteMeta, setQuoteMeta] = useState({
+    quoteNo: "",
+    salesperson: "",
+    date: "",
+    contactPerson: "",
+    internalOrderNo: "",
+  });
+
   const [items, setItems] = useState<Item[]>([
     {
       id: "1",
@@ -248,6 +256,8 @@ export default function Page() {
   const subtotal = computed.reduce((sum, item) => sum + item.price, 0);
   const vat = subtotal * VAT_RATE;
   const grandTotal = subtotal + vat;
+
+  const referenceValue = quoteMeta.quoteNo || "0";
 
   return (
     <div style={{ padding: 8, fontFamily: "Arial", background: "#fff", color: "#000" }}>
@@ -507,26 +517,34 @@ export default function Page() {
                   verticalAlign: "top",
                 }}
               >
-                <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                  <div style={{ flex: 1 }}>
-                    <img
-                      src="/logo.png"
-                      alt="Venetian Blind Centre"
-                      style={{
-                        width: "100%",
-                        maxWidth: 500,
-                        height: "auto",
-                        display: "block",
-                        marginBottom: 2,
-                      }}
-                    />
+                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                  <img
+                    src="/logo.png"
+                    alt="Venetian Blind Centre"
+                    style={{
+                      width: "100%",
+                      maxWidth: 500,
+                      height: "auto",
+                      display: "block",
+                      marginBottom: 6,
+                    }}
+                  />
 
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      gap: 10,
+                    }}
+                  >
                     <div
                       style={{
-                        marginTop: 4,
+                        marginTop: 2,
                         fontSize: 12,
                         lineHeight: "15px",
                         textAlign: "left",
+                        flex: 1,
                       }}
                     >
                       <div>442 Greyling Street</div>
@@ -536,26 +554,24 @@ export default function Page() {
                       <div>www.venetian.co.za</div>
                       <div>VAT Reg. No: 4390246884</div>
                     </div>
-                  </div>
 
-                  <div
-                    style={{
-                      width: 150,
-                      border: "1px solid #000",
-                      padding: 6,
-                      fontSize: 10.5,
-                      lineHeight: "14px",
-                      textAlign: "center",
-                      marginTop: 8,
-                      alignSelf: "flex-start",
-                    }}
-                  >
-                    <div><b>MONDAY TO FRIDAY -</b></div>
-                    <div><b>7:30am TO 4:30pm</b></div>
-                    <div style={{ marginTop: 4 }}><b>CLOSED FRIDAYS</b></div>
-                    <div><b>BETWEEN</b></div>
-                    <div><b>11:30 & 2pm</b></div>
-                    <div style={{ marginTop: 4 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
+                    <div
+                      style={{
+                        width: 150,
+                        border: "1px solid #000",
+                        padding: "8px 6px",
+                        fontSize: 10.5,
+                        lineHeight: "15px",
+                        textAlign: "center",
+                        marginTop: 22,
+                        marginRight: 8,
+                      }}
+                    >
+                      <div><b>MONDAY TO FRIDAY - 7:30am TO 4:30pm</b></div>
+                      <div style={{ marginTop: 2 }}><b>CLOSED FRIDAYS BETWEEN</b></div>
+                      <div><b>11:30 & 2pm</b></div>
+                      <div style={{ marginTop: 2 }}><b>SATURDAY - 7:30am TO 12:30pm</b></div>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -581,23 +597,29 @@ export default function Page() {
                       </td>
                     </tr>
                     <tr>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px", height: 18 }} />
+                    </tr>
+                    <tr>
                       <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
                         <b>POSTAL ADDRESS:</b>
                       </td>
                     </tr>
                     <tr>
+                      <td style={{ borderBottom: "1px solid #000", padding: "2px 5px", height: 18 }} />
+                    </tr>
+                    <tr>
                       <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span><b>TEL (HOME):</b></span>
-                          <span><b>TEL (WORK):</b></span>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
+                          <span><b>TEL: (HOME)</b></span>
+                          <span style={{ textAlign: "center" }}><b>TEL: (WORK)</b></span>
                         </div>
                       </td>
                     </tr>
                     <tr>
                       <td style={{ borderBottom: "1px solid #000", padding: "2px 5px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
                           <span><b>FAX:</b></span>
-                          <span><b>CELL:</b></span>
+                          <span style={{ textAlign: "center" }}><b>CELL:</b></span>
                         </div>
                       </td>
                     </tr>
@@ -608,9 +630,9 @@ export default function Page() {
                     </tr>
                     <tr>
                       <td style={{ padding: "2px 5px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
                           <span><b>CUSTOMER VAT NO:</b></span>
-                          <span><b>O/NO:</b></span>
+                          <span style={{ textAlign: "center" }}><b>O/NO:</b></span>
                         </div>
                       </td>
                     </tr>
@@ -625,60 +647,123 @@ export default function Page() {
                       <td
                         style={{
                           borderBottom: "1px solid #000",
-                          padding: "6px 4px",
+                          padding: "4px",
                           textAlign: "center",
+                          fontWeight: 700,
                         }}
                       >
-                        <b>QUOTATION</b>
+                        QUOTATION
                       </td>
                     </tr>
+
                     <tr>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #000",
-                          padding: "8px 4px",
-                          textAlign: "center",
-                        }}
-                      >
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
                         Quote No:
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #000",
-                          padding: "8px 4px",
-                          textAlign: "center",
-                        }}
-                      >
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                        <input
+                          value={quoteMeta.quoteNo}
+                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, quoteNo: e.target.value }))}
+                          style={{
+                            width: "88%",
+                            border: "none",
+                            outline: "none",
+                            textAlign: "center",
+                            fontSize: 12,
+                            color: "#c00000",
+                            background: "transparent",
+                          }}
+                        />
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
                         SALESPERSON:
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #000",
-                          padding: "8px 4px",
-                          textAlign: "center",
-                        }}
-                      >
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                        <input
+                          value={quoteMeta.salesperson}
+                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, salesperson: e.target.value }))}
+                          style={{
+                            width: "88%",
+                            border: "none",
+                            outline: "none",
+                            textAlign: "center",
+                            fontSize: 12,
+                            background: "transparent",
+                          }}
+                        />
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
                         DATE:
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        style={{
-                          borderBottom: "1px solid #000",
-                          padding: "8px 4px",
-                          textAlign: "center",
-                        }}
-                      >
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                        <input
+                          value={quoteMeta.date}
+                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, date: e.target.value }))}
+                          style={{
+                            width: "88%",
+                            border: "none",
+                            outline: "none",
+                            textAlign: "center",
+                            fontSize: 12,
+                            background: "transparent",
+                          }}
+                        />
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
                         CONTACT PERSON:
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "8px 4px", textAlign: "center" }}>
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
+                        <input
+                          value={quoteMeta.contactPerson}
+                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, contactPerson: e.target.value }))}
+                          style={{
+                            width: "88%",
+                            border: "none",
+                            outline: "none",
+                            textAlign: "center",
+                            fontSize: 12,
+                            background: "transparent",
+                          }}
+                        />
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style={{ borderBottom: "1px solid #000", padding: "3px 4px", textAlign: "center" }}>
                         INTERNAL ORDER No:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "3px 4px", textAlign: "center" }}>
+                        <input
+                          value={quoteMeta.internalOrderNo}
+                          onChange={(e) => setQuoteMeta((prev) => ({ ...prev, internalOrderNo: e.target.value }))}
+                          style={{
+                            width: "88%",
+                            border: "none",
+                            outline: "none",
+                            textAlign: "center",
+                            fontSize: 12,
+                            background: "transparent",
+                          }}
+                        />
                       </td>
                     </tr>
                   </tbody>
@@ -701,17 +786,18 @@ export default function Page() {
         >
           <thead>
             <tr>
-              <th style={{ textAlign: "center" }}>Area</th>
-              <th style={{ textAlign: "center" }}>Width</th>
-              <th style={{ textAlign: "center" }}>Drop</th>
-              <th style={{ textAlign: "center" }}>Type</th>
-              <th style={{ textAlign: "center" }}>Fabric</th>
-              <th style={{ textAlign: "center" }}>Colour</th>
-              <th style={{ textAlign: "center" }}>Slat Width</th>
-              <th style={{ textAlign: "center" }}>Fixture</th>
-              <th style={{ textAlign: "center" }}>Control</th>
-              <th style={{ textAlign: "center" }}>Remarks</th>
-              <th style={{ textAlign: "right" }}>Price</th>
+              <th style={{ textAlign: "center" }}>LOCATION</th>
+              <th style={{ textAlign: "center" }}>WIDTH mm</th>
+              <th style={{ textAlign: "center" }}>DROP mm</th>
+              <th style={{ textAlign: "center" }}>TYPE OF BLIND</th>
+              <th style={{ textAlign: "center" }}>FABRIC</th>
+              <th style={{ textAlign: "center" }}>COLOUR</th>
+              <th style={{ textAlign: "center" }}>SLAT WIDTH</th>
+              <th style={{ textAlign: "center" }}>FIXTURE</th>
+              <th style={{ textAlign: "center" }}>CONT/STACK</th>
+              <th style={{ textAlign: "center" }}>CONT/LENGTH</th>
+              <th style={{ textAlign: "center" }}>REMARKS</th>
+              <th style={{ textAlign: "right" }}>PRICE</th>
             </tr>
           </thead>
 
@@ -727,9 +813,10 @@ export default function Page() {
                 <td>{getSlatMode(item.type) === "na" ? "N/A" : displayValue(item.slat)}</td>
                 <td>{displayValue(item.fixture)}</td>
                 <td>{displayValue(item.control)}</td>
+                <td>{displayValue(item.control)}</td>
                 <td>{displayValue(item.remarks)}</td>
                 <td style={{ textAlign: "right", fontWeight: 600 }}>
-                  {item.pending ? "-" : item.custom ? "-" : item.price ? currency(item.price) : "-"}
+                  {item.pending ? "-" : item.custom ? "-" : item.price ? `R ${currency(item.price)}` : "-"}
                 </td>
               </tr>
             ))}
@@ -789,15 +876,20 @@ export default function Page() {
               background: "#fff",
             }}
           >
-            <div style={{ padding: "4px 8px", borderBottom: "1px solid #000", fontWeight: 700 }}>
+            <div style={{ padding: "4px 8px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center" }}>
               FIRST NATIONAL BANK
             </div>
+
             <div style={{ padding: "4px 8px", textAlign: "center", lineHeight: "20px" }}>
               <div><b>Branch:</b> 221325</div>
               <div><b>Acc:</b> 62180140156</div>
               <div><b>Name:</b> Venetian Blind Centre</div>
-              <div><b>REFERENCE:</b> 0</div>
+              <div>
+                <b>REFERENCE:</b>{" "}
+                <span style={{ color: "#c00000" }}>{referenceValue}</span>
+              </div>
             </div>
+
             <div
               style={{
                 background: "#000",
