@@ -146,6 +146,12 @@ function getControlOptions(type: BlindType): string[] {
   return ["RHC", "LHC"];
 }
 
+function getSlatMode(type: BlindType): "venetian" | "vertical" | "na" {
+  if (type === "Venetian") return "venetian";
+  if (verticalFamily.includes(type)) return "vertical";
+  return "na";
+}
+
 function displayValue(value: string | number | "" | undefined): string {
   if (value === "" || value === undefined) return "-";
   return String(value);
@@ -153,6 +159,16 @@ function displayValue(value: string | number | "" | undefined): string {
 
 export default function Page() {
   const [quoteMeta, setQuoteMeta] = useState({
+    invoiceName: "",
+    address: "",
+    postalAddress: "",
+    telHome: "",
+    telWork: "",
+    fax: "",
+    cell: "",
+    email: "",
+    vatNo: "",
+    orderNo: "",
     quoteNo: "",
     salesperson: "",
     date: "",
@@ -247,10 +263,28 @@ export default function Page() {
   return (
     <div style={{ padding: 8, fontFamily: "Arial", background: "#fff", color: "#000" }}>
       <style>{`
+        .quote-input {
+          width: 100%;
+          border: none;
+          outline: none;
+          background: transparent;
+          font: inherit;
+          padding: 0;
+          margin: 0;
+        }
+
+        .quote-input-center {
+          text-align: center;
+        }
+
+        .quote-input-right {
+          text-align: right;
+        }
+
         @media print {
           @page {
             size: A4 landscape;
-            margin: 5mm;
+            margin: 4mm;
           }
 
           body {
@@ -278,9 +312,23 @@ export default function Page() {
           }
 
           .print-scale {
-            transform: scale(0.93);
+            transform: scale(0.94);
             transform-origin: top left;
-            width: 107.5%;
+            width: 106.5%;
+          }
+
+          .quote-input {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+          }
+
+          select.quote-input {
+            color: transparent;
+            text-shadow: 0 0 0 #000;
           }
         }
       `}</style>
@@ -405,11 +453,34 @@ export default function Page() {
                   </td>
 
                   <td>
-                    <input
-                      value={item.slat}
-                      onChange={(e) => update(item.id, "slat", e.target.value)}
-                      style={{ width: "100%" }}
-                    />
+                    {getSlatMode(item.type) === "venetian" ? (
+                      <select
+                        value={item.slat}
+                        onChange={(e) => update(item.id, "slat", e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        <option value="25mm">25mm</option>
+                        <option value="50mm">50mm</option>
+                      </select>
+                    ) : getSlatMode(item.type) === "vertical" ? (
+                      <select
+                        value={item.slat}
+                        onChange={(e) => update(item.id, "slat", e.target.value)}
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        <option value="90mm">90mm</option>
+                        <option value="127mm">127mm</option>
+                        <option value="250mm">250mm</option>
+                      </select>
+                    ) : (
+                      <input
+                        value={item.slat}
+                        onChange={(e) => update(item.id, "slat", e.target.value)}
+                        style={{ width: "100%" }}
+                      />
+                    )}
                   </td>
 
                   <td>
@@ -530,7 +601,7 @@ export default function Page() {
                 width: "100%",
                 borderCollapse: "collapse",
                 border: "2px solid #000",
-                marginBottom: 6,
+                marginBottom: 5,
                 tableLayout: "fixed",
               }}
             >
@@ -553,7 +624,7 @@ export default function Page() {
                           maxWidth: 500,
                           height: "auto",
                           display: "block",
-                          marginBottom: 4,
+                          marginBottom: 3,
                         }}
                       />
 
@@ -567,9 +638,9 @@ export default function Page() {
                       >
                         <div
                           style={{
-                            marginTop: 2,
-                            fontSize: 11,
-                            lineHeight: "13px",
+                            marginTop: 1,
+                            fontSize: 10.5,
+                            lineHeight: "12px",
                             textAlign: "left",
                             flex: 1,
                           }}
@@ -584,14 +655,14 @@ export default function Page() {
 
                         <div
                           style={{
-                            width: 125,
+                            width: 122,
                             border: "1px solid #000",
-                            padding: "6px 5px",
-                            fontSize: 9.5,
-                            lineHeight: "13px",
+                            padding: "5px 4px",
+                            fontSize: 8.8,
+                            lineHeight: "11.5px",
                             textAlign: "center",
-                            marginTop: 18,
-                            marginRight: 4,
+                            marginTop: 14,
+                            marginRight: 2,
                           }}
                         >
                           <div><b>MONDAY TO FRIDAY - 7:30am TO 4:30pm</b></div>
@@ -611,55 +682,125 @@ export default function Page() {
                       padding: 0,
                     }}
                   >
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
                       <tbody>
                         <tr>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <b>INVOICE TO / NAME:</b>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <b>ADDRESS:</b>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px", height: 14 }} />
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <b>POSTAL ADDRESS:</b>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px", height: 14 }} />
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
-                              <span><b>TEL: (HOME)</b></span>
-                              <span style={{ textAlign: "center" }}><b>TEL: (WORK)</b></span>
+                            <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
+                              <span><b>INVOICE TO / NAME:</b></span>
+                              <input
+                                className="quote-input"
+                                value={quoteMeta.invoiceName}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, invoiceName: e.target.value }))}
+                              />
                             </div>
                           </td>
                         </tr>
                         <tr>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
-                              <span><b>FAX:</b></span>
-                              <span style={{ textAlign: "center" }}><b>CELL:</b></span>
+                            <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
+                              <span><b>ADDRESS:</b></span>
+                              <input
+                                className="quote-input"
+                                value={quoteMeta.address}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, address: e.target.value }))}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px", height: 12 }} />
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
+                              <span><b>POSTAL ADDRESS:</b></span>
+                              <input
+                                className="quote-input"
+                                value={quoteMeta.postalAddress}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, postalAddress: e.target.value }))}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px", height: 12 }} />
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                                <span><b>TEL: (HOME)</b></span>
+                                <input
+                                  className="quote-input"
+                                  value={quoteMeta.telHome}
+                                  onChange={(e) => setQuoteMeta((p) => ({ ...p, telHome: e.target.value }))}
+                                />
+                              </div>
+                              <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                                <span><b>TEL: (WORK)</b></span>
+                                <input
+                                  className="quote-input"
+                                  value={quoteMeta.telWork}
+                                  onChange={(e) => setQuoteMeta((p) => ({ ...p, telWork: e.target.value }))}
+                                />
+                              </div>
                             </div>
                           </td>
                         </tr>
                         <tr>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <b>E-MAIL:</b>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                                <span><b>FAX:</b></span>
+                                <input
+                                  className="quote-input"
+                                  value={quoteMeta.fax}
+                                  onChange={(e) => setQuoteMeta((p) => ({ ...p, fax: e.target.value }))}
+                                />
+                              </div>
+                              <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                                <span><b>CELL:</b></span>
+                                <input
+                                  className="quote-input"
+                                  value={quoteMeta.cell}
+                                  onChange={(e) => setQuoteMeta((p) => ({ ...p, cell: e.target.value }))}
+                                />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
+                              <span><b>E-MAIL:</b></span>
+                              <input
+                                className="quote-input"
+                                value={quoteMeta.email}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, email: e.target.value }))}
+                              />
+                            </div>
                           </td>
                         </tr>
                         <tr>
                           <td style={{ padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center" }}>
-                              <span><b>CUSTOMER VAT NO:</b></span>
-                              <span style={{ textAlign: "center" }}><b>O/NO:</b></span>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
+                                <span><b>CUSTOMER VAT NO:</b></span>
+                                <input
+                                  className="quote-input"
+                                  value={quoteMeta.vatNo}
+                                  onChange={(e) => setQuoteMeta((p) => ({ ...p, vatNo: e.target.value }))}
+                                />
+                              </div>
+                              <div style={{ display: "grid", gridTemplateColumns: "60px 1fr", alignItems: "center" }}>
+                                <span><b>O/NO:</b></span>
+                                <input
+                                  className="quote-input"
+                                  value={quoteMeta.orderNo}
+                                  onChange={(e) => setQuoteMeta((p) => ({ ...p, orderNo: e.target.value }))}
+                                />
+                              </div>
                             </div>
                           </td>
                         </tr>
@@ -668,13 +809,13 @@ export default function Page() {
                   </td>
 
                   <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
                       <tbody>
                         <tr>
                           <td
                             style={{
                               borderBottom: "1px solid #000",
-                              padding: "3px",
+                              padding: "2px",
                               textAlign: "center",
                               fontWeight: 700,
                             }}
@@ -684,57 +825,78 @@ export default function Page() {
                         </tr>
 
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
                             Quote No:
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
-                            {quoteMeta.quoteNo || ""}
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
+                            <input
+                              className="quote-input quote-input-center"
+                              style={{ color: "#c00000" }}
+                              value={quoteMeta.quoteNo}
+                              onChange={(e) => setQuoteMeta((p) => ({ ...p, quoteNo: e.target.value }))}
+                            />
                           </td>
                         </tr>
 
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
                             SALESPERSON:
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
-                            {quoteMeta.salesperson || ""}
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
+                            <input
+                              className="quote-input quote-input-center"
+                              value={quoteMeta.salesperson}
+                              onChange={(e) => setQuoteMeta((p) => ({ ...p, salesperson: e.target.value }))}
+                            />
                           </td>
                         </tr>
 
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
                             DATE:
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
-                            {quoteMeta.date || ""}
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
+                            <input
+                              className="quote-input quote-input-center"
+                              value={quoteMeta.date}
+                              onChange={(e) => setQuoteMeta((p) => ({ ...p, date: e.target.value }))}
+                            />
                           </td>
                         </tr>
 
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
                             CONTACT PERSON:
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
-                            {quoteMeta.contactPerson || ""}
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
+                            <input
+                              className="quote-input quote-input-center"
+                              value={quoteMeta.contactPerson}
+                              onChange={(e) => setQuoteMeta((p) => ({ ...p, contactPerson: e.target.value }))}
+                            />
                           </td>
                         </tr>
 
                         <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
                             INTERNAL ORDER No:
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ padding: "2px 3px", textAlign: "center" }}>
-                            {quoteMeta.internalOrderNo || ""}
+                          <td style={{ padding: "1px 3px", textAlign: "center" }}>
+                            <input
+                              className="quote-input quote-input-center"
+                              value={quoteMeta.internalOrderNo}
+                              onChange={(e) => setQuoteMeta((p) => ({ ...p, internalOrderNo: e.target.value }))}
+                            />
                           </td>
                         </tr>
                       </tbody>
@@ -751,7 +913,7 @@ export default function Page() {
                 width: "100%",
                 marginTop: 2,
                 borderCollapse: "collapse",
-                fontSize: 11,
+                fontSize: 10.5,
                 border: "2px solid #000",
               }}
             >
@@ -805,17 +967,17 @@ export default function Page() {
             >
               <tbody>
                 <tr>
-                  <td style={{ width: "12%", borderRight: "1px solid #000", padding: "3px 5px", fontWeight: 700, fontSize: 10.5 }}>
+                  <td style={{ width: "12%", borderRight: "1px solid #000", padding: "3px 5px", fontWeight: 700, fontSize: 10 }}>
                     SUPPLY ONLY
                   </td>
-                  <td style={{ width: "14%", borderRight: "1px solid #000", padding: "3px 5px", fontWeight: 700, fontSize: 10.5 }}>
+                  <td style={{ width: "14%", borderRight: "1px solid #000", padding: "3px 5px", fontWeight: 700, fontSize: 10 }}>
                     SUPPLY AND INSTALL
                   </td>
-                  <td style={{ width: "13%", borderRight: "1px solid #000", padding: "3px 5px", fontWeight: 700, fontSize: 10.5 }}>
+                  <td style={{ width: "13%", borderRight: "1px solid #000", padding: "3px 5px", fontWeight: 700, fontSize: 10 }}>
                     DELIVERY PERIOD
                   </td>
                   <td style={{ width: "6%", borderRight: "1px solid #000", padding: "3px 5px" }} />
-                  <td style={{ padding: "3px 5px", fontWeight: 700, fontSize: 10.5 }}>
+                  <td style={{ padding: "3px 5px", fontWeight: 700, fontSize: 10 }}>
                     WORKING DAYS FROM CONFIRMATION
                   </td>
                 </tr>
@@ -831,8 +993,8 @@ export default function Page() {
                 textAlign: "center",
                 fontWeight: 700,
                 padding: "3px 6px",
-                fontSize: 9.5,
-                lineHeight: "12px",
+                fontSize: 9,
+                lineHeight: "11px",
               }}
             >
               PRICES QUOTED ARE SUBJECT TO VARIATION SHOULD THE ABOVE DIFFER IN PRODUCT, DESIGN OR SIZE
@@ -848,11 +1010,11 @@ export default function Page() {
                   background: "#fff",
                 }}
               >
-                <div style={{ padding: "2px 6px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center", fontSize: 10.5 }}>
+                <div style={{ padding: "2px 6px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center", fontSize: 10 }}>
                   FIRST NATIONAL BANK
                 </div>
 
-                <div style={{ padding: "2px 6px", textAlign: "center", lineHeight: "16px", fontSize: 10 }}>
+                <div style={{ padding: "2px 6px", textAlign: "center", lineHeight: "15px", fontSize: 9.8 }}>
                   <div><b>Branch:</b> 221325</div>
                   <div><b>Acc:</b> 62180140156</div>
                   <div><b>Name:</b> Venetian Blind Centre</div>
@@ -869,8 +1031,8 @@ export default function Page() {
                     textAlign: "center",
                     padding: "4px 4px",
                     marginTop: 2,
-                    lineHeight: "14px",
-                    fontSize: 9.5,
+                    lineHeight: "13px",
+                    fontSize: 9,
                   }}
                 >
                   <div style={{ fontWeight: 700, marginBottom: 2 }}>PAYMENT TERMS</div>
@@ -887,7 +1049,7 @@ export default function Page() {
                   borderBottom: "2px solid #000",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 6px", fontWeight: 700, borderBottom: "1px solid #000" }}>
@@ -920,18 +1082,18 @@ export default function Page() {
                   borderBottom: "2px solid #000",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.8 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.4 }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 6px", fontWeight: 700, verticalAlign: "top" }}>
                         PLEASE NOTE THE FOLLOWING:-
                       </td>
-                      <td style={{ padding: "2px 6px", fontWeight: 700, textAlign: "center", verticalAlign: "top", width: 160 }}>
+                      <td style={{ padding: "2px 6px", fontWeight: 700, textAlign: "center", verticalAlign: "top", width: 150 }}>
                         QUOTE VALID FOR 7 DAYS
                       </td>
                     </tr>
                     <tr>
-                      <td colSpan={2} style={{ padding: "1px 6px", lineHeight: "15px" }}>
+                      <td colSpan={2} style={{ padding: "1px 6px", lineHeight: "14px" }}>
                         <div>All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.</div>
                         <div>We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.</div>
                         <div>All awnings and outdoor blinds installed are not guaranteed against storm damage.</div>
@@ -949,7 +1111,7 @@ export default function Page() {
                   borderBottom: "2px solid #000",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 6px", borderBottom: "1px solid #000" }}>SUBTOTAL</td>
@@ -960,8 +1122,8 @@ export default function Page() {
                       <td style={{ padding: "2px 6px", borderBottom: "1px solid #000", textAlign: "right" }}>R 0.00</td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "5px 6px" }}></td>
-                      <td style={{ padding: "5px 6px" }}></td>
+                      <td style={{ padding: "4px 6px" }}></td>
+                      <td style={{ padding: "4px 6px" }}></td>
                     </tr>
                     <tr>
                       <td style={{ padding: "2px 6px", borderTop: "1px solid #000", fontWeight: 700 }}>SUBTOTAL</td>
@@ -982,51 +1144,6 @@ export default function Page() {
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="no-print" style={{ marginTop: 12 }}>
-          <div
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              border: "2px solid #000",
-              padding: 8,
-            }}
-          >
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>QUOTATION DETAILS</div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 8, maxWidth: 500 }}>
-              <label>Quote No:</label>
-              <input
-                value={quoteMeta.quoteNo}
-                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, quoteNo: e.target.value }))}
-              />
-
-              <label>Salesperson:</label>
-              <input
-                value={quoteMeta.salesperson}
-                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, salesperson: e.target.value }))}
-              />
-
-              <label>Date:</label>
-              <input
-                value={quoteMeta.date}
-                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, date: e.target.value }))}
-              />
-
-              <label>Contact Person:</label>
-              <input
-                value={quoteMeta.contactPerson}
-                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, contactPerson: e.target.value }))}
-              />
-
-              <label>Internal Order No:</label>
-              <input
-                value={quoteMeta.internalOrderNo}
-                onChange={(e) => setQuoteMeta((prev) => ({ ...prev, internalOrderNo: e.target.value }))}
-              />
             </div>
           </div>
         </div>
