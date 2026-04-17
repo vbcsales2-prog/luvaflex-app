@@ -71,12 +71,84 @@ const WIDTH_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 55
 const DROP_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500];
 
 const BASE_PRICE_GRID: Record<number, Record<number, number>> = {
-  1000: { 1000: 1566, 1500: 1851, 2000: 2136, 2500: 2421, 3000: 2706, 3500: 2991, 4000: 3276, 4500: 3561, 5000: 3846, 5500: 4131, 6000: 4416 },
-  1500: { 1000: 1746, 1500: 2091, 2000: 2436, 2500: 2781, 3000: 3126, 3500: 3471, 4000: 3816, 4500: 4161, 5000: 4506, 5500: 4851, 6000: 5196 },
-  2000: { 1000: 1926, 1500: 2331, 2000: 2736, 2500: 3141, 3000: 3546, 3500: 3951, 4000: 4356, 4500: 4761, 5000: 5166, 5500: 5571, 6000: 5976 },
-  2500: { 1000: 2106, 1500: 2571, 2000: 3036, 2500: 3501, 3000: 3966, 3500: 4431, 4000: 4896, 4500: 5361, 5000: 5826, 5500: 6291, 6000: 6756 },
-  3000: { 1000: 2286, 1500: 2811, 2000: 3336, 2500: 3861, 3000: 4386, 3500: 4911, 4000: 5436, 4500: 5961, 5000: 6486, 5500: 7011, 6000: 7536 },
-  3500: { 1000: 2466, 1500: 3051, 2000: 3636, 2500: 4221, 3000: 4806, 3500: 5391, 4000: 5976, 4500: 6561, 5000: 7146, 5500: 7731, 6000: 8316 },
+  1000: {
+    1000: 1566,
+    1500: 1851,
+    2000: 2136,
+    2500: 2421,
+    3000: 2706,
+    3500: 2991,
+    4000: 3276,
+    4500: 3561,
+    5000: 3846,
+    5500: 4131,
+    6000: 4416,
+  },
+  1500: {
+    1000: 1746,
+    1500: 2091,
+    2000: 2436,
+    2500: 2781,
+    3000: 3126,
+    3500: 3471,
+    4000: 3816,
+    4500: 4161,
+    5000: 4506,
+    5500: 4851,
+    6000: 5196,
+  },
+  2000: {
+    1000: 1926,
+    1500: 2331,
+    2000: 2736,
+    2500: 3141,
+    3000: 3546,
+    3500: 3951,
+    4000: 4356,
+    4500: 4761,
+    5000: 5166,
+    5500: 5571,
+    6000: 5976,
+  },
+  2500: {
+    1000: 2106,
+    1500: 2571,
+    2000: 3036,
+    2500: 3501,
+    3000: 3966,
+    3500: 4431,
+    4000: 4896,
+    4500: 5361,
+    5000: 5826,
+    5500: 6291,
+    6000: 6756,
+  },
+  3000: {
+    1000: 2286,
+    1500: 2811,
+    2000: 3336,
+    2500: 3861,
+    3000: 4386,
+    3500: 4911,
+    4000: 5436,
+    4500: 5961,
+    5000: 6486,
+    5500: 7011,
+    6000: 7536,
+  },
+  3500: {
+    1000: 2466,
+    1500: 3051,
+    2000: 3636,
+    2500: 4221,
+    3000: 4806,
+    3500: 5391,
+    4000: 5976,
+    4500: 6561,
+    5000: 7146,
+    5500: 7731,
+    6000: 8316,
+  },
 };
 
 const CLEAR_WINDOW_ADDON: Record<number, number> = {
@@ -514,9 +586,7 @@ export default function Page() {
                 <td>{displayValue(item.type)}</td>
                 <td>{displayValue(item.fabric)}</td>
                 <td>{displayValue(item.colour)}</td>
-                <td>
-                  {getSlatMode(item.type) === "na" ? "N/A" : displayValue(item.slat)}
-                </td>
+                <td>{getSlatMode(item.type) === "na" ? "N/A" : displayValue(item.slat)}</td>
                 <td>{displayValue(item.fixture)}</td>
                 <td>{displayValue(item.control)}</td>
                 <td>{displayValue(item.remarks)}</td>
@@ -529,67 +599,68 @@ export default function Page() {
         </table>
 
         <div style={{ marginTop: 30, display: "flex", gap: 20 }}>
+          <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
+            <p>
+              <b>CUSTOMER CONFIRMATION</b>
+            </p>
+            <p>Name: __________________________</p>
+            <p>Date: __________________________</p>
+            <p>Signature: _____________________</p>
+          </div>
 
-  {/* CUSTOMER CONFIRMATION */}
-  <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
-    <p><b>CUSTOMER CONFIRMATION</b></p>
-    <p>Name: __________________________</p>
-    <p>Date: __________________________</p>
-    <p>Signature: _____________________</p>
-  </div>
+          <div style={{ flex: 2, border: "1px solid #000", padding: 10 }}>
+            <p>
+              <b>PLEASE NOTE THE FOLLOWING:</b>
+            </p>
 
-  {/* NOTES */}
-  <div style={{ flex: 2, border: "1px solid #000", padding: 10 }}>
-    <p><b>PLEASE NOTE THE FOLLOWING:</b></p>
+            <p style={{ fontSize: 13 }}>
+              All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
+            </p>
 
-    <p style={{ fontSize: 13 }}>
-      All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.
-    </p>
+            <p style={{ fontSize: 13 }}>
+              We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.
+            </p>
 
-    <p style={{ fontSize: 13 }}>
-      We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.
-    </p>
+            <p style={{ fontSize: 13 }}>
+              All awnings and outdoor blinds installed are not guaranteed against storm damage.
+            </p>
 
-    <p style={{ fontSize: 13 }}>
-      All awnings and outdoor blinds installed are not guaranteed against storm damage.
-    </p>
+            <p style={{ fontSize: 13 }}>
+              For security measures all cash payments to be made instore.
+            </p>
+          </div>
 
-    <p style={{ fontSize: 13 }}>
-      For security measures all cash payments to be made instore.
-    </p>
-  </div>
+          <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
+            <p style={{ textAlign: "center" }}>
+              <b>QUOTE VALID FOR 7 DAYS</b>
+            </p>
 
-  {/* VALIDITY + TOTALS */}
-  <div style={{ flex: 1, border: "1px solid #000", padding: 10 }}>
+            <div style={{ marginTop: 20 }}>
+              <p style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>Subtotal:</span>
+                <span>{currency(subtotal)}</span>
+              </p>
 
-    <p style={{ textAlign: "center" }}>
-      <b>QUOTE VALID FOR 7 DAYS</b>
-    </p>
+              <p style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>VAT:</span>
+                <span>{currency(vat)}</span>
+              </p>
 
-    <div style={{ marginTop: 20 }}>
-      <p style={{ display: "flex", justifyContent: "space-between" }}>
-        <span>Subtotal:</span>
-        <span>{currency(subtotal)}</span>
-      </p>
-
-      <p style={{ display: "flex", justifyContent: "space-between" }}>
-        <span>VAT:</span>
-        <span>{currency(vat)}</span>
-      </p>
-
-      <p style={{
-        display: "flex",
-        justifyContent: "space-between",
-        fontWeight: "bold",
-        marginTop: 10
-      }}>
-        <span>Total:</span>
-        <span>{currency(grandTotal)}</span>
-      </p>
+              <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontWeight: "bold",
+                  marginTop: 10,
+                }}
+              >
+                <span>Total:</span>
+                <span>{currency(grandTotal)}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-  </div>
-
-</div>
   );
 }
