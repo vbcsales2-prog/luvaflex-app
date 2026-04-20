@@ -72,45 +72,19 @@ const verticalFamily: BlindType[] = [
 const WIDTH_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000];
 const DROP_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500];
 
-const BASE_PRICE_GRID: Record<number, Record<number, number>> = {
-  1000: {
-    1000: 1566, 1500: 1851, 2000: 2136, 2500: 2421, 3000: 2706,
-    3500: 2991, 4000: 3276, 4500: 3561, 5000: 3846, 5500: 4131, 6000: 4416,
-  },
-  1500: {
-    1000: 1746, 1500: 2091, 2000: 2436, 2500: 2781, 3000: 3126,
-    3500: 3471, 4000: 3816, 4500: 4161, 5000: 4506, 5500: 4851, 6000: 5196,
-  },
-  2000: {
-    1000: 1926, 1500: 2331, 2000: 2736, 2500: 3141, 3000: 3546,
-    3500: 3951, 4000: 4356, 4500: 4761, 5000: 5166, 5500: 5571, 6000: 5976,
-  },
-  2500: {
-    1000: 2106, 1500: 2571, 2000: 3036, 2500: 3501, 3000: 3966,
-    3500: 4431, 4000: 4896, 4500: 5361, 5000: 5826, 5500: 6291, 6000: 6756,
-  },
-  3000: {
-    1000: 2286, 1500: 2811, 2000: 3336, 2500: 3861, 3000: 4386,
-    3500: 4911, 4000: 5436, 4500: 5961, 5000: 6486, 5500: 7011, 6000: 7536,
-  },
-  3500: {
-    1000: 2466, 1500: 3051, 2000: 3636, 2500: 4221, 3000: 4806,
-    3500: 5391, 4000: 5976, 4500: 6561, 5000: 7146, 5500: 7731, 6000: 8316,
-  },
-};
-
-const CLEAR_WINDOW_ADDON: Record<number, number> = {
-  1000: 450,
-  1500: 675,
-  2000: 900,
-  2500: 1125,
-  3000: 1350,
-  3500: 1575,
-  4000: 1800,
-  4500: 2025,
-  5000: 2250,
-  5500: 2475,
-  6000: 2700,
+const OUTDOOR_PRICING = {
+  gridStepMm: 500,
+  maxWidthMm: 6000,
+  maxDropMm: 3500,
+  defaultMarkup: 0,
+  fabricPerSqm: 130,
+  standardCostPerBlind: 924,
+  topBarPerM: 200,
+  bottomPolePerM: 200,
+  cordPerM: 20,
+  valancePerSqm: 120,
+  clearWindowPerSqm: 300,
+  clearWindowReferenceDropM: 1.5,
 };
 
 const VAT_RATE = 0.15;
@@ -120,6 +94,32 @@ function roundUp(value: number, steps: number[]): number | null {
     if (value <= step) return step;
   }
   return null;
+}
+
+function roundUpToStep(value: number, step: number): number {
+  return Math.ceil(value / step) * step;
+}
+
+function getOutdoorBasePrice(widthMm: number, dropMm: number): number {
+  const widthM = widthMm / 1000;
+  const dropM = dropMm / 1000;
+  const area = widthM * dropM;
+  const topAndBottomLength = widthM;
+  const cordLength = dropM * 6 + widthM;
+
+  return (
+    area * OUTDOOR_PRICING.fabricPerSqm +
+    OUTDOOR_PRICING.standardCostPerBlind +
+    topAndBottomLength * OUTDOOR_PRICING.topBarPerM +
+    topAndBottomLength * OUTDOOR_PRICING.bottomPolePerM +
+    cordLength * OUTDOOR_PRICING.cordPerM +
+    area * OUTDOOR_PRICING.valancePerSqm
+  );
+}
+
+function getOutdoorClearWindowAddon(widthMm: number): number {
+  const widthM = widthMm / 1000;
+  return widthM * OUTDOOR_PRICING.clearWindowReferenceDropM * OUTDOOR_PRICING.clearWindowPerSqm;
 }
 
 function currency(value: number): string {
@@ -233,15 +233,20 @@ export default function Page() {
           const widthMm = Math.ceil(Number(item.width) * 1000);
           const dropMm = Math.ceil(Number(item.drop) * 1000);
 
-          const roundedWidth = roundUp(widthMm, WIDTH_STEPS_MM);
-          const roundedDrop = roundUp(dropMm, DROP_STEPS_MM);
+          const roundedWidth = roundUpToStep(widthMm, OUTDOOR_PRICING.gridStepMm);
+          const roundedDrop = roundUpToStep(dropMm, OUTDOOR_PRICING.gridStepMm);
 
-          if (!roundedWidth || !roundedDrop) {
+          if (
+            roundedWidth > OUTDOOR_PRICING.maxWidthMm ||
+            roundedDrop > OUTDOOR_PRICING.maxDropMm
+          ) {
             custom = true;
           } else {
-            const base = BASE_PRICE_GRID[roundedDrop][roundedWidth];
-            const addon = item.remarks === "With Window" ? CLEAR_WINDOW_ADDON[roundedWidth] : 0;
-            price = base + addon;
+            const base = getOutdoorBasePrice(roundedWidth, roundedDrop);
+            const addon =
+              item.remarks === "With Window" ? getOutdoorClearWindowAddon(roundedWidth) : 0;
+
+            price = (base + addon) * (1 + OUTDOOR_PRICING.defaultMarkup);
           }
         }
       } else if (item.type !== "") {
