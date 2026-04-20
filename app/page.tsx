@@ -417,9 +417,9 @@ export default function Page() {
           }
 
           .print-scale {
-            transform: scale(0.96);
+            transform: scale(0.985);
             transform-origin: top left;
-            width: 104.2%;
+            width: 101.6%;
           }
 
           .quote-input {
@@ -455,7 +455,7 @@ export default function Page() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                gap: 10,
+                gap: 6,
                 marginBottom: 8,
                 flexWrap: "wrap",
               }}
@@ -784,7 +784,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="print-only-quote print-scale" style={{ marginTop: 8 }}>
+        <div className="print-only-quote print-scale" style={{ marginTop: 4 }}>
           <div
             style={{
               padding: 3,
@@ -797,7 +797,7 @@ export default function Page() {
                 width: "100%",
                 borderCollapse: "collapse",
                 border: "2px solid #000",
-                marginBottom: 3,
+                marginBottom: 2,
                 tableLayout: "fixed",
               }}
             >
@@ -805,9 +805,9 @@ export default function Page() {
                 <tr>
                   <td
                     style={{
-                      width: "36%",
+                      width: "35%",
                       borderRight: "2px solid #000",
-                      padding: "2px 4px",
+                      padding: "1px 3px",
                       verticalAlign: "top",
                     }}
                   >
@@ -817,7 +817,7 @@ export default function Page() {
                         alt="Venetian Blind Centre"
                         style={{
                           width: "100%",
-                          maxWidth: 470,
+                          maxWidth: 405,
                           height: "auto",
                           display: "block",
                           marginBottom: 2,
@@ -835,8 +835,8 @@ export default function Page() {
                         <div
                           style={{
                             marginTop: 0,
-                            fontSize: 9.4,
-                            lineHeight: "10.8px",
+                            fontSize: 8.8,
+                            lineHeight: "10.1px",
                             textAlign: "left",
                             flex: 1,
                           }}
@@ -851,13 +851,13 @@ export default function Page() {
 
                         <div
                           style={{
-                            width: 116,
+                            width: 98,
                             border: "1px solid #000",
                             padding: "3px 3px",
-                            fontSize: 8.2,
-                            lineHeight: "10.2px",
+                            fontSize: 7.4,
+                            lineHeight: "9.2px",
                             textAlign: "center",
-                            marginTop: 8,
+                            marginTop: 4,
                             marginRight: 1,
                           }}
                         >
@@ -873,17 +873,17 @@ export default function Page() {
 
                   <td
                     style={{
-                      width: "44%",
+                      width: "50%",
                       borderRight: "2px solid #000",
                       verticalAlign: "top",
                       padding: 0,
                     }}
                   >
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.3, height: "100%" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 8.9, height: "100%" }}>
                       <tbody>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "138px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", alignItems: "center" }}>
                               <span><b>INVOICE TO / NAME:</b></span>
                               <input
                                 className="quote-input"
@@ -893,9 +893,9 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "138px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", alignItems: "center" }}>
                               <span><b>ADDRESS:</b></span>
                               <input
                                 className="quote-input"
@@ -905,9 +905,9 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "138px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", alignItems: "center" }}>
                               <span><b>POSTAL ADDRESS:</b></span>
                               <input
                                 className="quote-input"
@@ -917,10 +917,10 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, alignItems: "center" }}>
-                              <div style={{ display: "grid", gridTemplateColumns: "82px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", alignItems: "center" }}>
                                 <span><b>TEL: (HOME)</b></span>
                                 <input
                                   className="quote-input"
@@ -928,7 +928,7 @@ export default function Page() {
                                   onChange={(e) => setQuoteMeta((p) => ({ ...p, telHome: e.target.value }))}
                                 />
                               </div>
-                              <div style={{ display: "grid", gridTemplateColumns: "82px 1fr", alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", alignItems: "center" }}>
                                 <span><b>TEL: (WORK)</b></span>
                                 <input
                                   className="quote-input"
@@ -939,10 +939,10 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, alignItems: "center" }}>
-                              <div style={{ display: "grid", gridTemplateColumns: "82px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", alignItems: "center" }}>
                                 <span><b>FAX:</b></span>
                                 <input
                                   className="quote-input"
@@ -950,7 +950,7 @@ export default function Page() {
                                   onChange={(e) => setQuoteMeta((p) => ({ ...p, fax: e.target.value }))}
                                 />
                               </div>
-                              <div style={{ display: "grid", gridTemplateColumns: "82px 1fr", alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "70px 1fr", alignItems: "center" }}>
                                 <span><b>CELL:</b></span>
                                 <input
                                   className="quote-input"
@@ -961,9 +961,9 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "138px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", alignItems: "center" }}>
                               <span><b>E-MAIL:</b></span>
                               <input
                                 className="quote-input"
@@ -973,10 +973,10 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr style={{ height: 15 }}>
-                          <td style={{ padding: "1px 4px" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, alignItems: "center" }}>
-                              <div style={{ display: "grid", gridTemplateColumns: "138px 1fr", alignItems: "center" }}>
+                        <tr style={{ height: 12 }}>
+                          <td style={{ padding: "1px 3px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", alignItems: "center" }}>
                                 <span><b>CUSTOMER VAT NO:</b></span>
                                 <input
                                   className="quote-input"
@@ -984,7 +984,7 @@ export default function Page() {
                                   onChange={(e) => setQuoteMeta((p) => ({ ...p, vatNo: e.target.value }))}
                                 />
                               </div>
-                              <div style={{ display: "grid", gridTemplateColumns: "52px 1fr", alignItems: "center" }}>
+                              <div style={{ display: "grid", gridTemplateColumns: "42px 1fr", alignItems: "center" }}>
                                 <span><b>O/NO:</b></span>
                                 <input
                                   className="quote-input"
@@ -999,10 +999,10 @@ export default function Page() {
                     </table>
                   </td>
 
-                  <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9.3, height: "100%" }}>
+                  <td style={{ width: "15%", verticalAlign: "top", padding: 0 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 8.9, height: "100%" }}>
                       <tbody>
-                        <tr style={{ height: 15 }}>
+                        <tr style={{ height: 12 }}>
                           <td
                             style={{
                               borderBottom: "1px solid #000",
@@ -1015,9 +1015,9 @@ export default function Page() {
                           </td>
                         </tr>
 
-                        <tr style={{ height: 15 }}>
+                        <tr style={{ height: 12 }}>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "78px 1fr", alignItems: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "66px 1fr", alignItems: "center" }}>
                               <span style={{ textAlign: "left" }}>Quote No:</span>
                               <input
                                 className="quote-input quote-input-center"
@@ -1029,9 +1029,9 @@ export default function Page() {
                           </td>
                         </tr>
 
-                        <tr style={{ height: 15 }}>
+                        <tr style={{ height: 12 }}>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "78px 1fr", alignItems: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "66px 1fr", alignItems: "center" }}>
                               <span style={{ textAlign: "left" }}>SALESPERSON:</span>
                               <input
                                 className="quote-input quote-input-center"
@@ -1042,9 +1042,9 @@ export default function Page() {
                           </td>
                         </tr>
 
-                        <tr style={{ height: 15 }}>
+                        <tr style={{ height: 12 }}>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "78px 1fr", alignItems: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "66px 1fr", alignItems: "center" }}>
                               <span style={{ textAlign: "left" }}>DATE:</span>
                               <input
                                 className="quote-input quote-input-center"
@@ -1055,9 +1055,9 @@ export default function Page() {
                           </td>
                         </tr>
 
-                        <tr style={{ height: 15 }}>
+                        <tr style={{ height: 12 }}>
                           <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "78px 1fr", alignItems: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "66px 1fr", alignItems: "center" }}>
                               <span style={{ textAlign: "left" }}>CONTACT PERSON:</span>
                               <input
                                 className="quote-input quote-input-center"
@@ -1068,9 +1068,9 @@ export default function Page() {
                           </td>
                         </tr>
 
-                        <tr style={{ height: 15 }}>
+                        <tr style={{ height: 12 }}>
                           <td style={{ padding: "1px 3px", textAlign: "center" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "78px 1fr", alignItems: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "66px 1fr", alignItems: "center" }}>
                               <span style={{ textAlign: "left" }}>INTERNAL ORDER No:</span>
                               <input
                                 className="quote-input quote-input-center"
@@ -1089,47 +1089,47 @@ export default function Page() {
 
             <table
               border={1}
-              cellPadding={3}
+              cellPadding={2}
               style={{
                 width: "100%",
                 marginTop: 2,
                 borderCollapse: "collapse",
-                fontSize: 9.2,
+                fontSize: 8.6,
                 border: "2px solid #000",
               }}
             >
               <thead>
                 <tr>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>LOCATION</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>WIDTH m</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>DROP m</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>TYPE OF BLIND</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>FABRIC</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>COLOUR</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>SLAT WIDTH</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>FIXTURE</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>CONT/STACK</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>CONT/LENGTH</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>REMARKS</th>
-                  <th style={{ textAlign: "right", padding: "2px 3px" }}>PRICE</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>LOCATION</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>WIDTH m</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>DROP m</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>TYPE OF BLIND</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>FABRIC</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>COLOUR</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>SLAT WIDTH</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>FIXTURE</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>CONT/STACK</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>CONT/LENGTH</th>
+                  <th style={{ textAlign: "center", padding: "1px 2px" }}>REMARKS</th>
+                  <th style={{ textAlign: "right", padding: "1px 2px" }}>PRICE</th>
                 </tr>
               </thead>
 
               <tbody>
                 {computed.map((item) => (
                   <tr key={item.id}>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.area)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.width)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.drop)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.type)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.fabric)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.colour)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.slat)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.fixture)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.control)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.controlLength)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.remarks)}</td>
-                    <td style={{ textAlign: "right", fontWeight: 600, padding: "2px 3px" }}>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.area)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.width)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.drop)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.type)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.fabric)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.colour)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.slat)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.fixture)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.control)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.controlLength)}</td>
+                    <td style={{ padding: "1px 2px" }}>{displayValue(item.remarks)}</td>
+                    <td style={{ textAlign: "right", fontWeight: 600, padding: "1px 2px" }}>
                       {item.pending ? "-" : item.custom ? "-" : item.price ? `R ${currency(item.price)}` : "-"}
                     </td>
                   </tr>
@@ -1148,17 +1148,17 @@ export default function Page() {
             >
               <tbody>
                 <tr>
-                  <td style={{ width: "12%", borderRight: "1px solid #000", padding: "2px 4px", fontWeight: 700, fontSize: 9 }}>
+                  <td style={{ width: "12%", borderRight: "1px solid #000", padding: "1px 3px", fontWeight: 700, fontSize: 8.5 }}>
                     SUPPLY ONLY
                   </td>
-                  <td style={{ width: "14%", borderRight: "1px solid #000", padding: "2px 4px", fontWeight: 700, fontSize: 9 }}>
+                  <td style={{ width: "14%", borderRight: "1px solid #000", padding: "1px 3px", fontWeight: 700, fontSize: 8.5 }}>
                     SUPPLY AND INSTALL
                   </td>
-                  <td style={{ width: "13%", borderRight: "1px solid #000", padding: "2px 4px", fontWeight: 700, fontSize: 9 }}>
+                  <td style={{ width: "13%", borderRight: "1px solid #000", padding: "1px 3px", fontWeight: 700, fontSize: 8.5 }}>
                     DELIVERY PERIOD
                   </td>
-                  <td style={{ width: "6%", borderRight: "1px solid #000", padding: "2px 4px" }} />
-                  <td style={{ padding: "2px 4px", fontWeight: 700, fontSize: 9 }}>
+                  <td style={{ width: "6%", borderRight: "1px solid #000", padding: "1px 3px" }} />
+                  <td style={{ padding: "1px 3px", fontWeight: 700, fontSize: 8.5 }}>
                     WORKING DAYS FROM CONFIRMATION
                   </td>
                 </tr>
@@ -1173,29 +1173,29 @@ export default function Page() {
                 color: "red",
                 textAlign: "center",
                 fontWeight: 700,
-                padding: "2px 6px",
-                fontSize: 8.2,
+                padding: "1px 4px",
+                fontSize: 7.4,
                 lineHeight: "9.6px",
               }}
             >
               PRICES QUOTED ARE SUBJECT TO VARIATION SHOULD THE ABOVE DIFFER IN PRODUCT, DESIGN OR SIZE
             </div>
 
-            <div style={{ display: "flex", gap: 0 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "19% 20% 44% 17%" }}>
               <div
                 style={{
-                  flex: 1.05,
+                  width: "100%",
                   borderLeft: "2px solid #000",
                   borderRight: "1px solid #000",
                   borderBottom: "2px solid #000",
                   background: "#fff",
                 }}
               >
-                <div style={{ padding: "2px 5px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center", fontSize: 9.2 }}>
+                <div style={{ padding: "2px 5px", borderBottom: "1px solid #000", fontWeight: 700, textAlign: "center", fontSize: 8.1 }}>
                   FIRST NATIONAL BANK
                 </div>
 
-                <div style={{ padding: "2px 5px", textAlign: "center", lineHeight: "12px", fontSize: 8.7 }}>
+                <div style={{ padding: "2px 5px", textAlign: "center", lineHeight: "10.2px", fontSize: 8.1 }}>
                   <div><b>Branch:</b> 221325</div>
                   <div><b>Acc:</b> 62180140156</div>
                   <div><b>Name:</b> Venetian Blind Centre</div>
@@ -1210,10 +1210,10 @@ export default function Page() {
                     background: "#000",
                     color: "#fff",
                     textAlign: "center",
-                    padding: "3px 4px",
-                    marginTop: 1,
-                    lineHeight: "11px",
-                    fontSize: 8.1,
+                    padding: "2px 3px",
+                    marginTop: 0,
+                    lineHeight: "10px",
+                    fontSize: 7.5,
                   }}
                 >
                   <div style={{ fontWeight: 700, marginBottom: 1 }}>PAYMENT TERMS</div>
@@ -1225,12 +1225,12 @@ export default function Page() {
 
               <div
                 style={{
-                  flex: 1.05,
+                  width: "100%",
                   borderRight: "1px solid #000",
                   borderBottom: "2px solid #000",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 8.5 }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 5px", fontWeight: 700, borderBottom: "1px solid #000" }}>
@@ -1258,23 +1258,23 @@ export default function Page() {
 
               <div
                 style={{
-                  flex: 2.35,
+                  width: "100%",
                   borderRight: "1px solid #000",
                   borderBottom: "2px solid #000",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 8.4 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 7.9 }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 5px", fontWeight: 700, verticalAlign: "top" }}>
                         PLEASE NOTE THE FOLLOWING:-
                       </td>
-                      <td style={{ padding: "2px 5px", fontWeight: 700, textAlign: "center", verticalAlign: "top", width: 135 }}>
+                      <td style={{ padding: "2px 5px", fontWeight: 700, textAlign: "center", verticalAlign: "top", width: 112 }}>
                         QUOTE VALID FOR 7 DAYS
                       </td>
                     </tr>
                     <tr>
-                      <td colSpan={2} style={{ padding: "1px 5px", lineHeight: "11px" }}>
+                      <td colSpan={2} style={{ padding: "1px 5px", lineHeight: "10px" }}>
                         <div>All wood and bamboo blinds will be subject to imperfections, warpage & colour variations inherent in natural wood.</div>
                         <div>We are not responsible for any damage whilst drilling through wall, brick, tile, granite & marble during installation.</div>
                         <div>All awnings and outdoor blinds installed are not guaranteed against storm damage.</div>
@@ -1287,12 +1287,12 @@ export default function Page() {
 
               <div
                 style={{
-                  flex: 0.9,
+                  width: "100%",
                   borderRight: "2px solid #000",
                   borderBottom: "2px solid #000",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 8.5 }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 5px", borderBottom: "1px solid #000" }}>SUBTOTAL</td>
