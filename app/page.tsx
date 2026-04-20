@@ -282,11 +282,6 @@ export default function Page() {
           text-align: right;
         }
 
-        .tight-cell {
-          padding-top: 1px;
-          padding-bottom: 1px;
-        }
-
         @media print {
           @page {
             size: A4 landscape;
@@ -1111,7 +1106,9 @@ export default function Page() {
                   <tbody>
                     <tr>
                       <td style={{ padding: "2px 5px", borderBottom: "1px solid #000" }}>SUBTOTAL</td>
-                      <td style={{ padding: "2px 5px", borderBottom: "1px solid #000", textAlign: "right" }}>R {currency(subtotal)}</td>
+                      <td style={{ padding: "2px 5px", borderBottom: "1px solid #000", textAlign: "right" }}>
+                        R {currency(subtotal)}
+                      </td>
                     </tr>
                     <tr>
                       <td style={{ padding: "2px 5px", borderBottom: "1px solid #000" }}>DISCOUNT</td>
@@ -1122,8 +1119,17 @@ export default function Page() {
                       <td style={{ padding: "2px 5px" }}></td>
                     </tr>
                     <tr>
-                      <td style={{ padding: "2px 5px", borderTop: "1px solid #000", fontWeight: 700 }}>SUBTOTAL</td>
-                      <td style={{ padding: "2px 5px", borderTop: "1px solid #000", textAlign: "right", fontWeight: 700" }}>
+                      <td style={{ padding: "2px 5px", borderTop: "1px solid #000", fontWeight: 700 }}>
+                        SUBTOTAL
+                      </td>
+                      <td
+                        style={{
+                          padding: "2px 5px",
+                          borderTop: "1px solid #000",
+                          textAlign: "right",
+                          fontWeight: 700,
+                        }}
+                      >
                         R {currency(subtotal)}
                       </td>
                     </tr>
