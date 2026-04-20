@@ -682,10 +682,10 @@ export default function Page() {
                       padding: 0,
                     }}
                   >
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5, height: "100%" }}>
                       <tbody>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
                               <span><b>INVOICE TO / NAME:</b></span>
                               <input
@@ -696,8 +696,8 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
                               <span><b>ADDRESS:</b></span>
                               <input
@@ -708,11 +708,8 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px", height: 12 }} />
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
                               <span><b>POSTAL ADDRESS:</b></span>
                               <input
@@ -723,11 +720,8 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px", height: 12 }} />
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "center" }}>
                               <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
                                 <span><b>TEL: (HOME)</b></span>
@@ -748,8 +742,8 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "center" }}>
                               <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
                                 <span><b>FAX:</b></span>
@@ -770,8 +764,8 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
                               <span><b>E-MAIL:</b></span>
                               <input
@@ -782,8 +776,8 @@ export default function Page() {
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ padding: "1px 4px" }}>
+                        <tr style={{ height: 18 }}>
+                          <td style={{ padding: "2px 4px" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "center" }}>
                               <div style={{ display: "grid", gridTemplateColumns: "145px 1fr", alignItems: "center" }}>
                                 <span><b>CUSTOMER VAT NO:</b></span>
@@ -809,13 +803,13 @@ export default function Page() {
                   </td>
 
                   <td style={{ width: "20%", verticalAlign: "top", padding: 0 }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5, height: "100%" }}>
                       <tbody>
-                        <tr>
+                        <tr style={{ height: 18 }}>
                           <td
                             style={{
                               borderBottom: "1px solid #000",
-                              padding: "2px",
+                              padding: "2px 3px",
                               textAlign: "center",
                               fontWeight: 700,
                             }}
@@ -824,79 +818,69 @@ export default function Page() {
                           </td>
                         </tr>
 
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            Quote No:
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <input
-                              className="quote-input quote-input-center"
-                              style={{ color: "#c00000" }}
-                              value={quoteMeta.quoteNo}
-                              onChange={(e) => setQuoteMeta((p) => ({ ...p, quoteNo: e.target.value }))}
-                            />
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            SALESPERSON:
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <input
-                              className="quote-input quote-input-center"
-                              value={quoteMeta.salesperson}
-                              onChange={(e) => setQuoteMeta((p) => ({ ...p, salesperson: e.target.value }))}
-                            />
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                              <span style={{ textAlign: "left" }}>Quote No:</span>
+                              <input
+                                className="quote-input quote-input-center"
+                                style={{ color: "#c00000" }}
+                                value={quoteMeta.quoteNo}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, quoteNo: e.target.value }))}
+                              />
+                            </div>
                           </td>
                         </tr>
 
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            DATE:
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <input
-                              className="quote-input quote-input-center"
-                              value={quoteMeta.date}
-                              onChange={(e) => setQuoteMeta((p) => ({ ...p, date: e.target.value }))}
-                            />
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            CONTACT PERSON:
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            <input
-                              className="quote-input quote-input-center"
-                              value={quoteMeta.contactPerson}
-                              onChange={(e) => setQuoteMeta((p) => ({ ...p, contactPerson: e.target.value }))}
-                            />
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                              <span style={{ textAlign: "left" }}>SALESPERSON:</span>
+                              <input
+                                className="quote-input quote-input-center"
+                                value={quoteMeta.salesperson}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, salesperson: e.target.value }))}
+                              />
+                            </div>
                           </td>
                         </tr>
 
-                        <tr>
-                          <td style={{ borderBottom: "1px solid #000", padding: "1px 3px", textAlign: "center" }}>
-                            INTERNAL ORDER No:
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                              <span style={{ textAlign: "left" }}>DATE:</span>
+                              <input
+                                className="quote-input quote-input-center"
+                                value={quoteMeta.date}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, date: e.target.value }))}
+                              />
+                            </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td style={{ padding: "1px 3px", textAlign: "center" }}>
-                            <input
-                              className="quote-input quote-input-center"
-                              value={quoteMeta.internalOrderNo}
-                              onChange={(e) => setQuoteMeta((p) => ({ ...p, internalOrderNo: e.target.value }))}
-                            />
+
+                        <tr style={{ height: 18 }}>
+                          <td style={{ borderBottom: "1px solid #000", padding: "2px 3px", textAlign: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                              <span style={{ textAlign: "left" }}>CONTACT PERSON:</span>
+                              <input
+                                className="quote-input quote-input-center"
+                                value={quoteMeta.contactPerson}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, contactPerson: e.target.value }))}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr style={{ height: 18 }}>
+                          <td style={{ padding: "2px 3px", textAlign: "center" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", alignItems: "center" }}>
+                              <span style={{ textAlign: "left" }}>INTERNAL ORDER No:</span>
+                              <input
+                                className="quote-input quote-input-center"
+                                value={quoteMeta.internalOrderNo}
+                                onChange={(e) => setQuoteMeta((p) => ({ ...p, internalOrderNo: e.target.value }))}
+                              />
+                            </div>
                           </td>
                         </tr>
                       </tbody>
