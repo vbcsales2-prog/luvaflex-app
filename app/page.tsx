@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 type BlindType =
   | ""
@@ -30,6 +30,7 @@ type Item = {
   slat: string;
   fixture: string;
   control: string;
+  controlLength: string;
   remarks: string;
   manualPrice?: number;
   editingPrice?: boolean;
@@ -72,7 +73,22 @@ const verticalFamily: BlindType[] = [
 const WIDTH_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000];
 const DROP_STEPS_MM = [1000, 1500, 2000, 2500, 3000, 3500];
 
-const OUTDOOR_PRICING = {
+type OutdoorPricing = {
+  gridStepMm: number;
+  maxWidthMm: number;
+  maxDropMm: number;
+  defaultMarkup: number;
+  fabricPerSqm: number;
+  standardCostPerBlind: number;
+  topBarPerM: number;
+  bottomPolePerM: number;
+  cordPerM: number;
+  valancePerSqm: number;
+  clearWindowPerSqm: number;
+  clearWindowReferenceDropM: number;
+};
+
+const DEFAULT_OUTDOOR_PRICING: OutdoorPricing = {
   gridStepMm: 500,
   maxWidthMm: 6000,
   maxDropMm: 3500,
@@ -100,7 +116,7 @@ function roundUpToStep(value: number, step: number): number {
   return Math.ceil(value / step) * step;
 }
 
-function getOutdoorBasePrice(widthMm: number, dropMm: number): number {
+function getOutdoorBasePrice(widthMm: number, dropMm: number, pricing: OutdoorPricing): number {
   const widthM = widthMm / 1000;
   const dropM = dropMm / 1000;
   const area = widthM * dropM;
@@ -108,18 +124,47 @@ function getOutdoorBasePrice(widthMm: number, dropMm: number): number {
   const cordLength = dropM * 6 + widthM;
 
   return (
-    area * OUTDOOR_PRICING.fabricPerSqm +
-    OUTDOOR_PRICING.standardCostPerBlind +
-    topAndBottomLength * OUTDOOR_PRICING.topBarPerM +
-    topAndBottomLength * OUTDOOR_PRICING.bottomPolePerM +
-    cordLength * OUTDOOR_PRICING.cordPerM +
-    area * OUTDOOR_PRICING.valancePerSqm
+    area * pricing.fabricPerSqm +
+    pricing.standardCostPerBlind +
+    topAndBottomLength * pricing.topBarPerM +
+    topAndBottomLength * pricing.bottomPolePerM +
+    cordLength * pricing.cordPerM +
+    area * pricing.valancePerSqm
   );
 }
 
-function getOutdoorClearWindowAddon(widthMm: number): number {
+function getOutdoorClearWindowAddon(widthMm: number, pricing: OutdoorPricing): number {
   const widthM = widthMm / 1000;
-  return widthM * OUTDOOR_PRICING.clearWindowReferenceDropM * OUTDOOR_PRICING.clearWindowPerSqm;
+  return widthM * pricing.clearWindowReferenceDropM * pricing.clearWindowPerSqm;
+}
+
+
+
+function getOutdoorGridSteps(maxMm: number, stepMm: number): number[] {
+  const steps: number[] = [];
+  for (let value = stepMm * 2; value <= maxMm; value += stepMm) {
+    steps.push(value);
+  }
+  return steps;
+}
+
+function pricingFieldLabel(field: keyof OutdoorPricing): string {
+  const labels: Record<keyof OutdoorPricing, string> = {
+    gridStepMm: "Grid step (mm)",
+    maxWidthMm: "Max width (mm)",
+    maxDropMm: "Max drop (mm)",
+    defaultMarkup: "Markup (%)",
+    fabricPerSqm: "Fabric / m²",
+    standardCostPerBlind: "Standard cost / blind",
+    topBarPerM: "Top bar / m",
+    bottomPolePerM: "Bottom pole / m",
+    cordPerM: "6mm cord / m",
+    valancePerSqm: "Valance / m²",
+    clearWindowPerSqm: "Clear window / m²",
+    clearWindowReferenceDropM: "Window ref drop (m)",
+  };
+
+  return labels[field];
 }
 
 function currency(value: number): string {
@@ -142,14 +187,22 @@ function getControlOptions(type: BlindType): string[] {
       "RHC/CENTRE",
     ];
   }
-  if (type === "") return [];
-  return ["RHC", "LHC"];
+  if (["Outdoor", "Venetian", "Roller", "Roman", "Lumi Cell", "Lumi Plisse", "Doppio", "Zebra"].includes(type)) {
+    return ["RHC", "LHC"];
+  }
+  return [];
 }
 
-function getSlatMode(type: BlindType): "venetian" | "vertical" | "na" {
+function getControlMode(type: BlindType): "dropdown" | "manual" {
+  return getControlOptions(type).length > 0 ? "dropdown" : "manual";
+}
+
+function getSlatMode(type: BlindType): "venetian" | "vertical" | "na" | "manual" {
   if (type === "Venetian") return "venetian";
   if (verticalFamily.includes(type)) return "vertical";
-  return "na";
+  if (["Outdoor", "Roller", "Roman"].includes(type)) return "na";
+  if (["Lumi Cell", "Lumi Plisse", "Doppio", "Zebra"].includes(type)) return "manual";
+  return "manual";
 }
 
 function displayValue(value: string | number | "" | undefined): string {
@@ -176,6 +229,9 @@ export default function Page() {
     internalOrderNo: "",
   });
 
+  const [showPricingPanel, setShowPricingPanel] = useState(false);
+  const [outdoorPricing, setOutdoorPricing] = useState<OutdoorPricing>(DEFAULT_OUTDOOR_PRICING);
+
   const [items, setItems] = useState<Item[]>([
     {
       id: "1",
@@ -188,6 +244,7 @@ export default function Page() {
       slat: "",
       fixture: "",
       control: "",
+      controlLength: "",
       remarks: "",
       manualPrice: undefined,
       editingPrice: false,
@@ -212,12 +269,53 @@ export default function Page() {
         slat: "",
         fixture: "",
         control: "",
+        controlLength: "",
         remarks: "",
         manualPrice: undefined,
         editingPrice: false,
       },
     ]);
   };
+
+
+
+  useEffect(() => {
+    const savedPricing = window.localStorage.getItem("luvaflex-outdoor-pricing");
+    if (!savedPricing) return;
+
+    try {
+      const parsed = JSON.parse(savedPricing) as Partial<OutdoorPricing>;
+      setOutdoorPricing((prev) => ({ ...prev, ...parsed }));
+    } catch (error) {
+      console.error("Failed to load outdoor pricing", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("luvaflex-outdoor-pricing", JSON.stringify(outdoorPricing));
+  }, [outdoorPricing]);
+
+  const updateOutdoorPricing = (field: keyof OutdoorPricing, value: number) => {
+    setOutdoorPricing((prev) => ({
+      ...prev,
+      [field]: field === "defaultMarkup" ? value / 100 : value,
+    }));
+  };
+
+  const resetOutdoorPricing = () => {
+    setOutdoorPricing(DEFAULT_OUTDOOR_PRICING);
+    window.localStorage.removeItem("luvaflex-outdoor-pricing");
+  };
+
+  const outdoorWidthStepsMm = useMemo(
+    () => getOutdoorGridSteps(outdoorPricing.maxWidthMm, outdoorPricing.gridStepMm),
+    [outdoorPricing.maxWidthMm, outdoorPricing.gridStepMm]
+  );
+
+  const outdoorDropStepsMm = useMemo(
+    () => getOutdoorGridSteps(outdoorPricing.maxDropMm, outdoorPricing.gridStepMm),
+    [outdoorPricing.maxDropMm, outdoorPricing.gridStepMm]
+  );
 
   const computed: ComputedItem[] = useMemo(() => {
     return items.map((item) => {
@@ -233,20 +331,20 @@ export default function Page() {
           const widthMm = Math.ceil(Number(item.width) * 1000);
           const dropMm = Math.ceil(Number(item.drop) * 1000);
 
-          const roundedWidth = roundUpToStep(widthMm, OUTDOOR_PRICING.gridStepMm);
-          const roundedDrop = roundUpToStep(dropMm, OUTDOOR_PRICING.gridStepMm);
+          const roundedWidth = roundUpToStep(widthMm, outdoorPricing.gridStepMm);
+          const roundedDrop = roundUpToStep(dropMm, outdoorPricing.gridStepMm);
 
           if (
-            roundedWidth > OUTDOOR_PRICING.maxWidthMm ||
-            roundedDrop > OUTDOOR_PRICING.maxDropMm
+            roundedWidth > outdoorPricing.maxWidthMm ||
+            roundedDrop > outdoorPricing.maxDropMm
           ) {
             custom = true;
           } else {
-            const base = getOutdoorBasePrice(roundedWidth, roundedDrop);
+            const base = getOutdoorBasePrice(roundedWidth, roundedDrop, outdoorPricing);
             const addon =
-              item.remarks === "With Window" ? getOutdoorClearWindowAddon(roundedWidth) : 0;
+              item.remarks === "With Window" ? getOutdoorClearWindowAddon(roundedWidth, outdoorPricing) : 0;
 
-            price = (base + addon) * (1 + OUTDOOR_PRICING.defaultMarkup);
+            price = (base + addon) * (1 + outdoorPricing.defaultMarkup);
           }
         }
       } else if (item.type !== "") {
@@ -258,7 +356,7 @@ export default function Page() {
 
       return { ...item, price, pending, custom, manual };
     });
-  }, [items]);
+  }, [items, outdoorPricing]);
 
   const subtotal = computed.reduce((sum, item) => sum + item.price, 0);
   const vat = subtotal * VAT_RATE;
@@ -344,6 +442,81 @@ export default function Page() {
         <div className="no-print">
           <h1 style={{ margin: "0 0 10px 0", fontSize: 18 }}>Luvaflex Quote App</h1>
 
+          <div
+            style={{
+              border: "2px solid #000",
+              padding: 10,
+              marginBottom: 12,
+              background: "#f8f8f8",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 8,
+                flexWrap: "wrap",
+              }}
+            >
+              <div>
+                <h2 style={{ margin: 0, fontSize: 16 }}>Outdoor price maintenance</h2>
+                <p style={{ margin: "4px 0 0 0", fontSize: 12 }}>
+                  Change supplier values here whenever pricing moves again. These values save in this browser.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button type="button" onClick={() => setShowPricingPanel((prev) => !prev)}>
+                  {showPricingPanel ? "Hide settings" : "Show settings"}
+                </button>
+                <button type="button" onClick={resetOutdoorPricing}>
+                  Reset to latest workbook values
+                </button>
+              </div>
+            </div>
+
+            {showPricingPanel && (
+              <>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                    gap: 8,
+                    marginBottom: 10,
+                  }}
+                >
+                  {(Object.keys(DEFAULT_OUTDOOR_PRICING) as Array<keyof OutdoorPricing>).map((field) => (
+                    <label
+                      key={field}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                        fontSize: 12,
+                      }}
+                    >
+                      <span>{pricingFieldLabel(field)}</span>
+                      <input
+                        type="number"
+                        step={field === "defaultMarkup" ? "0.1" : "0.01"}
+                        value={field === "defaultMarkup" ? outdoorPricing[field] * 100 : outdoorPricing[field]}
+                        onChange={(e) => updateOutdoorPricing(field, Number(e.target.value || 0))}
+                      />
+                    </label>
+                  ))}
+                </div>
+
+                <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 12 }}>
+                  <div>Width steps: {outdoorWidthStepsMm.map((value) => value / 1000).join("m, ")}m</div>
+                  <div>Drop steps: {outdoorDropStepsMm.map((value) => value / 1000).join("m, ")}m</div>
+                </div>
+              </>
+            )}
+          </div>
+
+
           <table
             border={1}
             cellPadding={6}
@@ -364,7 +537,8 @@ export default function Page() {
                 <th>Colour</th>
                 <th>Slat Width</th>
                 <th>Fixture</th>
-                <th>Control</th>
+                <th>Cont/Stack</th>
+                <th>Cont/Length</th>
                 <th>Remarks</th>
                 <th>Price</th>
               </tr>
@@ -415,6 +589,7 @@ export default function Page() {
                         update(item.id, "slat", "");
                         update(item.id, "fixture", "");
                         update(item.id, "control", "");
+                        update(item.id, "controlLength", "");
                         update(item.id, "remarks", "");
                         update(item.id, "manualPrice", undefined);
                         update(item.id, "editingPrice", false);
@@ -481,6 +656,8 @@ export default function Page() {
                         <option value="127mm">127mm</option>
                         <option value="250mm">250mm</option>
                       </select>
+                    ) : getSlatMode(item.type) === "na" ? (
+                      <input value="N/A" readOnly style={{ width: "100%", background: "#f3f3f3" }} />
                     ) : (
                       <input
                         value={item.slat}
@@ -504,7 +681,7 @@ export default function Page() {
                   </td>
 
                   <td>
-                    {item.type === "" ? (
+                    {item.type === "" || getControlMode(item.type) === "manual" ? (
                       <input
                         value={item.control}
                         onChange={(e) => update(item.id, "control", e.target.value)}
@@ -524,6 +701,14 @@ export default function Page() {
                         ))}
                       </select>
                     )}
+                  </td>
+
+                  <td>
+                    <input
+                      value={item.controlLength}
+                      onChange={(e) => update(item.id, "controlLength", e.target.value)}
+                      style={{ width: "100%" }}
+                    />
                   </td>
 
                   <td>
@@ -916,8 +1101,8 @@ export default function Page() {
               <thead>
                 <tr>
                   <th style={{ textAlign: "center", padding: "2px 3px" }}>LOCATION</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>WIDTH mm</th>
-                  <th style={{ textAlign: "center", padding: "2px 3px" }}>DROP mm</th>
+                  <th style={{ textAlign: "center", padding: "2px 3px" }}>WIDTH m</th>
+                  <th style={{ textAlign: "center", padding: "2px 3px" }}>DROP m</th>
                   <th style={{ textAlign: "center", padding: "2px 3px" }}>TYPE OF BLIND</th>
                   <th style={{ textAlign: "center", padding: "2px 3px" }}>FABRIC</th>
                   <th style={{ textAlign: "center", padding: "2px 3px" }}>COLOUR</th>
@@ -942,7 +1127,7 @@ export default function Page() {
                     <td style={{ padding: "2px 3px" }}>{displayValue(item.slat)}</td>
                     <td style={{ padding: "2px 3px" }}>{displayValue(item.fixture)}</td>
                     <td style={{ padding: "2px 3px" }}>{displayValue(item.control)}</td>
-                    <td style={{ padding: "2px 3px" }}>{displayValue(item.control)}</td>
+                    <td style={{ padding: "2px 3px" }}>{displayValue(item.controlLength)}</td>
                     <td style={{ padding: "2px 3px" }}>{displayValue(item.remarks)}</td>
                     <td style={{ textAlign: "right", fontWeight: 600, padding: "2px 3px" }}>
                       {item.pending ? "-" : item.custom ? "-" : item.price ? `R ${currency(item.price)}` : "-"}
